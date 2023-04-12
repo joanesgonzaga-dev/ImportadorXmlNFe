@@ -37,8 +37,7 @@ namespace ImportadorXmlNFe
         public frmCadProdutoXmlNfe()
         {
             _conectaDB = new ConectaDB();
-            InitializeComponent();
-            
+            InitializeComponent();   
         }
 
         #region Eventos De Layout do Formulário
@@ -120,7 +119,6 @@ namespace ImportadorXmlNFe
         }
 
         #endregion
-
         private void frmCadProdutoXmlNfe_Load(object sender, EventArgs e)
         {
             produtoNfe_Restore = produtoNfe;
@@ -135,9 +133,11 @@ namespace ImportadorXmlNFe
 
             DefineSelecaoComboBoxes(produtoNfe);
 
-            AdicionaManipuladoresDeEventosComboBox();
+            AdicionaManipuladoresDeEventosAosComponentes();
 
             FormataDataGridView();
+
+            BloqueiaEdicao(produtoNfe.isExiste);
         }
 
         #region Manipuladores de Eventos Atribuidos aos ComboBoxes manualmente
@@ -185,7 +185,6 @@ namespace ImportadorXmlNFe
 
                 Y += 30;
             }
-            
         }
 
         private List<Grade> RetornaGrades()
@@ -220,7 +219,6 @@ namespace ImportadorXmlNFe
             }
             catch (Exception ex)
             {
-
                 throw ex;
             }
         }
@@ -265,7 +263,7 @@ namespace ImportadorXmlNFe
         }
         #endregion
 
-        private void AdicionaManipuladoresDeEventosComboBox()
+        private void AdicionaManipuladoresDeEventosAosComponentes()
         {
             cbModalidadeDeterminaBC.SelectedValueChanged += CbModalidadeDeterminaBC_SelectedValueChanged;
             cb_cstICMS.SelectedValueChanged += Cb_cstICMS_SelectedValueChanged;
@@ -273,6 +271,7 @@ namespace ImportadorXmlNFe
             cb_CstPIS.SelectedValueChanged += Cb_CstPIS_SelectedValueChanged;
             cb_CstCofins.SelectedValueChanged += Cb_CstCofins_SelectedValueChanged;
         }
+
 
         #region carregamento de ComboBoxes e ListBoxes
 
@@ -536,18 +535,30 @@ namespace ImportadorXmlNFe
             }
         }
 
+        private void BloqueiaEdicao(bool isExiste)
+        {
+                txt_Nome.ReadOnly = !isExiste;
+                txt_Un.ReadOnly = !isExiste;
+                chkb_isFracionado.Enabled = !isExiste;
+                txt_Ncm.ReadOnly = !isExiste;
+                txt_CodigoBarras.ReadOnly = !isExiste;
+                txt_Referencia.ReadOnly = !isExiste;
+                chkb_AlterarPrecos.Checked = !isExiste;
+            
+        }
+
         private void CarregaDGVTabelasDePrecos()
         {
             try
             {
                 dgvTabelasDePrecos.DataSource = produtoNfe.ItensGradeProdutos.First().Precos;
+                dgvTabelasDePrecos.Refresh();
             }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
-
         private void VinculaComponentesForm(ProdutoNFe dataSourceProdutoNFe)
         {
             System.Windows.Forms.Binding bndTxt_Nome;
@@ -583,8 +594,8 @@ namespace ImportadorXmlNFe
             System.Windows.Forms.Binding bndChk_isPesavel;
             bndChk_isPesavel = new System.Windows.Forms.Binding("Checked", dataSourceProdutoNFe, "isPesavel");
             bndChk_isPesavel.DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
-            ckb_isFracionado.DataBindings.Clear();
-            ckb_isFracionado.DataBindings.Add(bndChk_isPesavel);
+            chkb_isFracionado.DataBindings.Clear();
+            chkb_isFracionado.DataBindings.Add(bndChk_isPesavel);
 
             System.Windows.Forms.Binding bndTxt_Quantidade;
             bndTxt_Quantidade = new System.Windows.Forms.Binding("Text", dataSourceProdutoNFe, "qCom");
@@ -687,20 +698,33 @@ namespace ImportadorXmlNFe
             bndTxt_vBC_COFINS.DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
             txt_vBC_COFINS.DataBindings.Clear();
             txt_vBC_COFINS.DataBindings.Add(bndTxt_vBC_COFINS);
-
             //txt_Preco.Text = produtoNFe.vUnCom.ToString();
-
         }
-
         private void CapturaRadioButton(object sender, EventArgs e)
         {
             RadioButton rb = (RadioButton)sender;
             CarregaListBoxItensTabGrade(rb.Tag.ToString());
-        }
+        } 
+        private void chkb_AlterarPrecos_CheckStateChanged(object sender, EventArgs e)
+        {
+            if (chkb_AlterarPrecos.Checked)
+            {
+                dgvTabelasDePrecos.Enabled = true;
+            }
+            else
+            {
+                dgvTabelasDePrecos.Enabled = false;
 
+                foreach (var preco in produtoNfe.ItensGradeProdutos[0].Precos)
+                {
+                    preco.PrecoVenda = 0.0M;
+                }
+                CarregaDGVTabelasDePrecos();
+            }
+        }
         private void btnRestaurar_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Função em Desenvolvimento", "Mensagem da DinnamuS", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Função em Desenvolvimento. Entre em contato com o suporte para previsão", "Mensagem da DinnamuS", MessageBoxButtons.OK, MessageBoxIcon.Information);
             //if ( MessageBox.Show("Confirma a restauração dos dados presentes no XML da Nota Fiscal para este produto?", "Restaurar Valores", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             //{
             //    produtoNfe = produtoNfe_Restore;

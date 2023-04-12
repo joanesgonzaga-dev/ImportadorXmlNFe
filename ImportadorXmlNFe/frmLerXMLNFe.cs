@@ -71,6 +71,7 @@ namespace ImportadorXmlNFe
         {
             try
             {
+                loja = Program.Loja;
                 _connection = ConnectionSingleton.GetInstance();
 
                 produtoRepository = new CadProdutoRepository();
@@ -90,18 +91,13 @@ namespace ImportadorXmlNFe
             {
                 MessageBox.Show("Ocorreu um erro ao construir o aplicativo \n" + "new frmLerXMLNFe()" + ex.Message + "\n" + ex.StackTrace);
             }
-            
-            
-
         }
-
         private void frmLerXMLNFe_Load(object sender, EventArgs e)
         {
             statusNota.status = StatusNota.Status.ALER;
             cadProdutos = new List<CadProduto>();
             produtoDataGrid = new ProdutoNFeDataGridColumns();
             BindAcoes(new ObservableCollection<ProdutoNFeDataGridColumns>());
-
         }
 
         private void btnLocalizarXML_Click(object sender, EventArgs e)
@@ -149,17 +145,12 @@ namespace ImportadorXmlNFe
             //    btnImportarXML.Enabled = true;
             //    btnCancelarXML.Enabled = true;
             //}
-
-            
-
         }
 
         private bool ValidaDestinatario(DestinatarioNFe destinatarioNFe, Loja loja)
         {
             return (loja.CNPJ == destinatarioNFe.CNPJ) || (loja.CNPJ == destinatarioNFe.CPF) ? true : false;
-           
         }
-
         private bool isNotaRecebida(string chaveDeAcesso)
         {
             try
@@ -173,14 +164,12 @@ namespace ImportadorXmlNFe
                 {
                     return dadosMoviEstoqueRepository.ConsultaLancamentoNFe(chaveDeAcesso);
                 }
-                
             }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
-
         private void LerDadosXmlNFe()
         {
             try
@@ -428,6 +417,7 @@ namespace ImportadorXmlNFe
 
                                     produtoDataGrid.cEAN = produtoNFe.cEAN;
                                     intExiste = ExisteProdutoNFe(produtoNFe.XmlLink, produtoNFe.CodBarraForn);
+                                    
                                 }
 
                                 if (reader.Name == "xProd")
@@ -601,7 +591,7 @@ namespace ImportadorXmlNFe
                                     produtoNFe.emitenteNFe = emitenteNFe;
                                     produtoNFe.Loja = Program.Loja.Codigo;
 
-                                    CarregaTabelaDePrecosProdutoNFe(produtoNFe);
+                                    CarregaTabelaDePrecosProdutoNFe(produtoNFe, intExiste);
 
                                     produtosNFE.Add(produtoNFe);
                                     produtosParaDataGridColumns.Add(produtoDataGrid);
@@ -614,14 +604,10 @@ namespace ImportadorXmlNFe
                     FormataDataGridView();
 
                     DesabilitaRowParaProdutoRepetido(dgvProdutos);
-                    
-                        
                         //for (int i = 0; i < dgvProdutos.Rows.Count; i++)
                     //{
                     //    MessageBox.Show(((DataGridViewRow)dgvProdutos.Rows[i]).Cells[2].Value.ToString());
                     //}
-
-
                 }
                 catch (Exception ex)
                 {
@@ -645,8 +631,6 @@ namespace ImportadorXmlNFe
 
             //dgvProdutos.Columns.Add(imgColumn);
 
-
-
             dgvProdutos.Columns[1].DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.BottomLeft };
 
             //dgvProdutos.Columns[8].Width = 30;
@@ -661,7 +645,6 @@ namespace ImportadorXmlNFe
             //dgvProdutos.Columns[5].Width = 90;
             //dgvProdutos.Columns[6].Width = 220;
             //dgvProdutos.Columns[7].Width = 220;
-
 
             dgvProdutos.RowTemplate.Height = 28;
 
@@ -711,7 +694,8 @@ namespace ImportadorXmlNFe
         {
             try
             {
-                string strEANBusca = "SELECT xmlLink,codbarraforn FROM itensgradeproduto WHERE xmlLink = '" + xmlLink + "'" + (!(string.IsNullOrEmpty(codbarraforn)) ? "OR codbarraforn='" + codbarraforn + "'" : ""); //@cEAN";
+                int retorno = 0;
+                string strEANBusca = "SELECT chaveunica, xmlLink,codbarraforn FROM itensgradeproduto WHERE xmlLink = '" + xmlLink + "'" + (!(string.IsNullOrEmpty(codbarraforn)) ? "OR codbarraforn='" + codbarraforn + "'" : ""); //@cEAN";
 
                 using (SqlCommand cmd = _connection.CreateCommand())
                 {
@@ -720,11 +704,12 @@ namespace ImportadorXmlNFe
                     cmd.Transaction = ConnectionSingleton.GetTransaction();
                     using (SqlDataReader dr = cmd.ExecuteReader())
                     {
-                        int retorno = 0;
-                        while (dr.Read())
+                        if (dr.HasRows)
                         {
-                            retorno++;
+                            dr.Read();
+                            retorno = Convert.IsDBNull(dr.GetInt32(0)) ? retorno : dr.GetInt32(0);
                         }
+                        
                         return retorno;
                     }
                 }
@@ -739,10 +724,8 @@ namespace ImportadorXmlNFe
 
         private void btnLerXML_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(((ProdutoNFeDataGridColumns)bndSourceProdutosDataGrid.Current).acaoProdNFe.ToString());
-            
+            MessageBox.Show(((ProdutoNFeDataGridColumns)bndSourceProdutosDataGrid.Current).acaoProdNFe.ToString()); 
         }
-
         private void btnImportarXML_Click(object sender, EventArgs e) 
         {
             if (statusNota.status == StatusNota.Status.RECEBIDA)
@@ -754,13 +737,11 @@ namespace ImportadorXmlNFe
 
             importarNFE();
         }
-
         private void importarNFE()
         {
            ConnectionSingleton.BeginTransaction(); //pesquisar como alterar o modo de lock da transaction (serializar)
             try
             {
-                
                 importarNFE_Action();
 
                 ConnectionSingleton.Commit();
@@ -812,10 +793,13 @@ namespace ImportadorXmlNFe
 
                 foreach (var _produtoNFe in produtosNFE)
                 {
-                    _produtoNFe.isExiste = ExisteProdutoNFe(_produtoNFe.ItensGradeProdutos[0].XmlLink, _produtoNFe.ItensGradeProdutos[0].CodBarraForn) > 0 ? true : false; //LINHA NOVA
+                    int chaveItem = ExisteProdutoNFe(_produtoNFe.ItensGradeProdutos[0].XmlLink, _produtoNFe.ItensGradeProdutos[0].CodBarraForn);
+                    _produtoNFe.isExiste = chaveItem > 0 ? true : false; //LINHA NOVA
 
                     CadProduto cadProd = ProdutoNFeMappings.MapToCadProduto(_produtoNFe);
+
                     cadProd.DataCadastro = DateTime.Today;
+                    cadProd.Codigo = produtoRepository.RetornaCodigoProdutoPelaChaveUnicaDoItemGrade(chaveItem);
                     cadProd.Ativado = true;
                     cadProd.ItensGrade = new List<ItemGradeProduto>();
                     cadProd.ItensGrade.Add(ProdutoNFeMappings.MapToItemGradeProduto(_produtoNFe));
@@ -824,9 +808,9 @@ namespace ImportadorXmlNFe
                    
                     if ((!_produtoNFe.isExiste) & (!_produtoNFe.isDuplicado) )
                     {
-                        int chaveItem = produtoRepository.CadastraProdutoRetornaChaveItemGrade(cadProd);
+                        chaveItem = produtoRepository.CadastraProdutoRetornaChaveItemGrade(cadProd);
                         _produtoNFe.ItensGradeProdutos[0].ChaveUnica = chaveItem;
-
+                        _produtoNFe.isAlteraPreco = true;
                         ItemMovEstoque item = new ItemMovEstoque()
                         {
                             Codigo = dadosMoviEstoque.Codigo,
@@ -866,11 +850,10 @@ namespace ImportadorXmlNFe
                         }
 
                     }
+                    
                     else if ((!_produtoNFe.isExiste) & (_produtoNFe.isDuplicado)) // NAO ATUALIZA CADASTRO, APENAS MOVIMENTA ESTOQUE
                     {
-                        //Chama o loop para calcular estoque anterior e quantidades na lista, pois ainda não constam no banco
                         float estoqueAnterior = 0;
-                        int chaveItem = 0;
                         ProdutoNFe prod = produtosNFE.Find(p => p.Equals(_produtoNFe));
                         int indiceDoElementoAtual = produtosNFE.IndexOf(prod);
 
@@ -921,12 +904,29 @@ namespace ImportadorXmlNFe
                             estoqueFilialRepository.AtualizaEstoqueDoItem(estoque);
                         } 
                     }
-                    else if ( (_produtoNFe.isExiste) & (!_produtoNFe.isDuplicado) ) //ATUALIZA CADASTRO E MOVIMENTA ESTOQUE
+                    
+                    else if ( (_produtoNFe.isExiste) & (!_produtoNFe.isDuplicado) ) 
                     {
-                        produtoRepository.Update(cadProd);
-                        //movimentar o estoque
+                        #region Nota
+                        /*
+                         * //ATUALIZA(RIA) CADASTRO E MOVIMENTA ESTOQUE
+                         * Em tese, esta condição deveria permitir atualizar os dados do produto da nota já existente no cadastro,
+                         * porém, na prática, esta operação altera de forma inadvertida os dados do produto existente.
+                         * O bloco condicional será mantido por precaução
+                         */
+                        #endregion
+                        MovimentaEstoqueProdutosDuplicados(ref cadProd, chaveItem, estoqueFilialRepository, dadosMoviEstoque, _produtoNFe);
+                        produtoRepository.UpdatePelaNFe(cadProd);
+                    }
+
+                    else if ((_produtoNFe.isExiste) & (_produtoNFe.isDuplicado)) 
+                    {
+                        //ATUALIZA(RIA) CADASTRO E MOVIMENTA ESTOQUE
+                        MovimentaEstoqueProdutosDuplicados(ref cadProd, chaveItem, estoqueFilialRepository, dadosMoviEstoque, _produtoNFe);
+                        produtoRepository.UpdatePelaNFe(cadProd);
                     }
                 }
+
                 #region Pesquisa novamente, na base de dados, se cada produto existe(foi cadastrado), compara com os itens do DataGridView e atualiza a propriedade isExiste destes
                 produtosNFE.ForEach(pNFe => pNFe.isExiste = (ExisteProdutoNFe(pNFe.XmlLink, pNFe.CodBarraForn) > 0 ? true : false));
                 foreach (ProdutoNFeDataGridColumns pDataGrid in produtosParaDataGridColumns)
@@ -939,6 +939,7 @@ namespace ImportadorXmlNFe
                         }
                     }
                 }
+
                 //Atualiza DataGridView, pois a Interface INotifyPropertyChanged apresentou erro
                 BindAcoes(produtosParaDataGridColumns);
                 #endregion
@@ -953,6 +954,53 @@ namespace ImportadorXmlNFe
             }
 
         }
+
+        private void MovimentaEstoqueProdutosDuplicados(ref CadProduto cadProd, int chaveItem, EstoqueFilialRepository estoqueFilialRepository, DadosMoviEstoque dadosMoviEstoque, ProdutoNFe _produtoNFe)
+        {
+            cadProd.Chaveunica = produtoRepository.RetornaChaveUnicaProdutoPelaChaveDoItemGrade(chaveItem);
+
+            foreach (var item in cadProd.ItensGrade)
+            {
+                item.ChaveUnica = chaveItem;
+                item.EstoqueNasFiliais = new List<EstoqueFilial>();
+                item.EstoqueNasFiliais.Add
+                    (
+                        new EstoqueFilial()
+                        {
+                            CodigoProduto = chaveItem,
+                            CodigoFilial = (int)cb_LocaisDeEstoque.SelectedValue,
+                            CodigoLoja = loja.Codigo
+                                        //Estoque      = item.EstoqueInicial
+                                    }
+                    );
+
+                decimal estoqueAnterior = estoqueFilialRepository.ConsultaEstoqueDoItem(item.EstoqueNasFiliais[0]);
+
+                ItemMovEstoque itemMovEstoque = new ItemMovEstoque()
+                {
+                    Codigo = dadosMoviEstoque.Codigo,
+                    CodProd = item.ChaveUnica,
+                    CodMov = dadosMoviEstoque.CodMov,
+                    NomeMov = dadosMoviEstoque.NomeMov,
+                    TipoMov = dadosMoviEstoque.TipoMov,
+                    CodCor = string.Empty,
+                    CodTam = string.Empty,
+                    Data = dadosMoviEstoque.Data,
+                    Quantidade = cadProd.ItensGrade[0].EstoqueInicial,
+                    Preco = cadProd.ItensGrade[0].PrecoCompra,
+                    Total = Decimal.Parse(_produtoNFe.vProd),
+                    Ref = string.IsNullOrEmpty(cadProd.ItensGrade[0].Referencia) ? string.Empty : cadProd.ItensGrade[0].Referencia,
+                    Loja = loja.Codigo,
+                    EstoqueAnterior = (float)estoqueAnterior,
+                    EstoqueAtual = (float)estoqueAnterior + (float)cadProd.ItensGrade[0].EstoqueInicial
+                };
+
+                dadosMoviEstoqueRepository.InserirItemMovEstoque(itemMovEstoque);
+
+                item.EstoqueNasFiliais[0].Estoque = (decimal)itemMovEstoque.EstoqueAtual;
+            }
+        }
+
         private void BindAcoes(ObservableCollection<ProdutoNFeDataGridColumns> lista)
         {
 
@@ -1045,10 +1093,8 @@ namespace ImportadorXmlNFe
             {
                 ic.Image = Image.FromFile(@"not.png");
             }
-
         }
-
-        private void CarregaTabelaDePrecosProdutoNFe(ProdutoNFe prod)
+        private void CarregaTabelaDePrecosProdutoNFe(ProdutoNFe prod, int chaveUnicaItem)
         {
             if (prod.ItensGradeProdutos == null)
             {
@@ -1057,7 +1103,9 @@ namespace ImportadorXmlNFe
                 prod.ItensGradeProdutos.Add
                     (new ItemGradeProduto
                     {
+                        ChaveUnica = chaveUnicaItem,
                         Loja = Program.Loja.Codigo,
+                        CodBarraForn = prod.CodBarraForn,
                         EstoqueInicial = prod.qCom
                     });
 
@@ -1107,12 +1155,7 @@ namespace ImportadorXmlNFe
 
                     formProdNFe.ShowDialog();
                 }
-
-
-
-
             }
-
         }
 
         private void MudaCorLabelStatusNota()
@@ -1147,14 +1190,14 @@ namespace ImportadorXmlNFe
             if (statusNota.status == StatusNota.Status.NAORECEBER)
             {
                 panelStatus.BackColor = Color.Red;
-                lblMensagemStatus.Text = "DESTINATÁRIO DESCONHECIDO";
+                lblMensagemStatus.Text = "DESTINATÁRIO NÃO PERMITIDO";
             }
 
         }
 
         private void btnCancelarXML_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Função em Desenvolvimento", "Mensagem da DinnamuS", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Função em Desenvolvimento. Entre em contato com o suporte para previsão", "Mensagem da DinnamuS", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 

@@ -6,12 +6,12 @@ using System.Runtime.InteropServices;
 // conjunto de atributos. Altere estes valores de atributo para modificar as informações
 // associadas a um assembly.
 [assembly: AssemblyTitle("ImportadorXmlNFe")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Lê o XML da NFe e importa seus dados para o estoque do DinnamuS Automação")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Softaway Sistemas")]
 [assembly: AssemblyProduct("ImportadorXmlNFe")]
 [assembly: AssemblyCopyright("Copyright ©  2023")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyTrademark("DinnamuS")]
 [assembly: AssemblyCulture("")]
 
 // Definir ComVisible como false torna os tipos neste assembly invisíveis

@@ -30,12 +30,12 @@ namespace ImportadorXmlNFe
         private void InitializeComponent()
         {
             this.panelBase = new System.Windows.Forms.Panel();
+            this.chkb_AlterarPrecos = new System.Windows.Forms.CheckBox();
             this.label30 = new System.Windows.Forms.Label();
             this.txt_CodigoBarras = new System.Windows.Forms.TextBox();
-            this.ckb_isFracionado = new System.Windows.Forms.CheckBox();
+            this.chkb_isFracionado = new System.Windows.Forms.CheckBox();
             this.label29 = new System.Windows.Forms.Label();
             this.txt_Referencia = new System.Windows.Forms.TextBox();
-            this.label26 = new System.Windows.Forms.Label();
             this.dgvTabelasDePrecos = new System.Windows.Forms.DataGridView();
             this.chaveunica = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.codigoproduto = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -132,12 +132,12 @@ namespace ImportadorXmlNFe
             // panelBase
             // 
             this.panelBase.BackColor = System.Drawing.Color.NavajoWhite;
+            this.panelBase.Controls.Add(this.chkb_AlterarPrecos);
             this.panelBase.Controls.Add(this.label30);
             this.panelBase.Controls.Add(this.txt_CodigoBarras);
-            this.panelBase.Controls.Add(this.ckb_isFracionado);
+            this.panelBase.Controls.Add(this.chkb_isFracionado);
             this.panelBase.Controls.Add(this.label29);
             this.panelBase.Controls.Add(this.txt_Referencia);
-            this.panelBase.Controls.Add(this.label26);
             this.panelBase.Controls.Add(this.dgvTabelasDePrecos);
             this.panelBase.Controls.Add(this.label28);
             this.panelBase.Controls.Add(this.txt_Quantidade);
@@ -167,6 +167,17 @@ namespace ImportadorXmlNFe
             this.panelBase.Size = new System.Drawing.Size(1020, 747);
             this.panelBase.TabIndex = 0;
             // 
+            // chkb_AlterarPrecos
+            // 
+            this.chkb_AlterarPrecos.AutoSize = true;
+            this.chkb_AlterarPrecos.Location = new System.Drawing.Point(210, 256);
+            this.chkb_AlterarPrecos.Name = "chkb_AlterarPrecos";
+            this.chkb_AlterarPrecos.Size = new System.Drawing.Size(139, 17);
+            this.chkb_AlterarPrecos.TabIndex = 53;
+            this.chkb_AlterarPrecos.Text = "Mudar preços de venda";
+            this.chkb_AlterarPrecos.UseVisualStyleBackColor = true;
+            this.chkb_AlterarPrecos.CheckStateChanged += new System.EventHandler(this.chkb_AlterarPrecos_CheckStateChanged);
+            // 
             // label30
             // 
             this.label30.AutoSize = true;
@@ -184,16 +195,16 @@ namespace ImportadorXmlNFe
             this.txt_CodigoBarras.Size = new System.Drawing.Size(257, 33);
             this.txt_CodigoBarras.TabIndex = 51;
             // 
-            // ckb_isFracionado
+            // chkb_isFracionado
             // 
-            this.ckb_isFracionado.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.ckb_isFracionado.AutoSize = true;
-            this.ckb_isFracionado.Location = new System.Drawing.Point(876, 71);
-            this.ckb_isFracionado.Name = "ckb_isFracionado";
-            this.ckb_isFracionado.Size = new System.Drawing.Size(70, 17);
-            this.ckb_isFracionado.TabIndex = 50;
-            this.ckb_isFracionado.Text = "Pesável?";
-            this.ckb_isFracionado.UseVisualStyleBackColor = true;
+            this.chkb_isFracionado.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkb_isFracionado.AutoSize = true;
+            this.chkb_isFracionado.Location = new System.Drawing.Point(876, 71);
+            this.chkb_isFracionado.Name = "chkb_isFracionado";
+            this.chkb_isFracionado.Size = new System.Drawing.Size(70, 17);
+            this.chkb_isFracionado.TabIndex = 50;
+            this.chkb_isFracionado.Text = "Pesável?";
+            this.chkb_isFracionado.UseVisualStyleBackColor = true;
             // 
             // label29
             // 
@@ -212,15 +223,6 @@ namespace ImportadorXmlNFe
             this.txt_Referencia.Size = new System.Drawing.Size(133, 33);
             this.txt_Referencia.TabIndex = 48;
             // 
-            // label26
-            // 
-            this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(210, 234);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(87, 13);
-            this.label26.TabIndex = 47;
-            this.label26.Text = "preços de venda";
-            // 
             // dgvTabelasDePrecos
             // 
             this.dgvTabelasDePrecos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -231,7 +233,7 @@ namespace ImportadorXmlNFe
             this.codigotabela,
             this.nometabela,
             this.PrecoVenda});
-            this.dgvTabelasDePrecos.Location = new System.Drawing.Point(210, 250);
+            this.dgvTabelasDePrecos.Location = new System.Drawing.Point(210, 279);
             this.dgvTabelasDePrecos.Name = "dgvTabelasDePrecos";
             this.dgvTabelasDePrecos.Size = new System.Drawing.Size(551, 100);
             this.dgvTabelasDePrecos.TabIndex = 45;
@@ -317,10 +319,10 @@ namespace ImportadorXmlNFe
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabFiscal.Controls.Add(this.tabPage1);
-            this.tabFiscal.Location = new System.Drawing.Point(206, 356);
+            this.tabFiscal.Location = new System.Drawing.Point(206, 385);
             this.tabFiscal.Name = "tabFiscal";
             this.tabFiscal.SelectedIndex = 0;
-            this.tabFiscal.Size = new System.Drawing.Size(802, 379);
+            this.tabFiscal.Size = new System.Drawing.Size(802, 350);
             this.tabFiscal.TabIndex = 42;
             // 
             // tabPage1
@@ -339,7 +341,7 @@ namespace ImportadorXmlNFe
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(794, 353);
+            this.tabPage1.Size = new System.Drawing.Size(794, 324);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Fiscal";
             // 
@@ -358,7 +360,7 @@ namespace ImportadorXmlNFe
             this.panel7.Controls.Add(this.label16);
             this.panel7.Location = new System.Drawing.Point(13, 364);
             this.panel7.Name = "panel7";
-            this.panel7.Size = new System.Drawing.Size(726, 86);
+            this.panel7.Size = new System.Drawing.Size(675, 86);
             this.panel7.TabIndex = 48;
             // 
             // label25
@@ -421,7 +423,7 @@ namespace ImportadorXmlNFe
             this.cb_CstCofins.FormattingEnabled = true;
             this.cb_CstCofins.Location = new System.Drawing.Point(286, 31);
             this.cb_CstCofins.Name = "cb_CstCofins";
-            this.cb_CstCofins.Size = new System.Drawing.Size(393, 33);
+            this.cb_CstCofins.Size = new System.Drawing.Size(342, 33);
             this.cb_CstCofins.TabIndex = 32;
             // 
             // label16
@@ -448,7 +450,7 @@ namespace ImportadorXmlNFe
             this.panel6.Controls.Add(this.label12);
             this.panel6.Location = new System.Drawing.Point(13, 272);
             this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(726, 86);
+            this.panel6.Size = new System.Drawing.Size(675, 86);
             this.panel6.TabIndex = 47;
             // 
             // txt_vBC_PIS
@@ -514,7 +516,7 @@ namespace ImportadorXmlNFe
             this.cb_CstPIS.FormattingEnabled = true;
             this.cb_CstPIS.Location = new System.Drawing.Point(286, 28);
             this.cb_CstPIS.Name = "cb_CstPIS";
-            this.cb_CstPIS.Size = new System.Drawing.Size(393, 33);
+            this.cb_CstPIS.Size = new System.Drawing.Size(342, 33);
             this.cb_CstPIS.TabIndex = 22;
             // 
             // label12
@@ -543,7 +545,7 @@ namespace ImportadorXmlNFe
             this.panel5.Controls.Add(this.label13);
             this.panel5.Location = new System.Drawing.Point(13, 179);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(726, 86);
+            this.panel5.Size = new System.Drawing.Size(675, 86);
             this.panel5.TabIndex = 46;
             // 
             // label23
@@ -582,7 +584,7 @@ namespace ImportadorXmlNFe
             this.cb_cstIPI.FormattingEnabled = true;
             this.cb_cstIPI.Location = new System.Drawing.Point(377, 24);
             this.cb_cstIPI.Name = "cb_cstIPI";
-            this.cb_cstIPI.Size = new System.Drawing.Size(302, 33);
+            this.cb_cstIPI.Size = new System.Drawing.Size(251, 33);
             this.cb_cstIPI.TabIndex = 30;
             // 
             // label20
@@ -654,7 +656,7 @@ namespace ImportadorXmlNFe
             this.panel4.Controls.Add(this.label11);
             this.panel4.Location = new System.Drawing.Point(13, 87);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(726, 86);
+            this.panel4.Size = new System.Drawing.Size(675, 86);
             this.panel4.TabIndex = 45;
             // 
             // txt_vBC_ICMS
@@ -720,7 +722,7 @@ namespace ImportadorXmlNFe
             this.cb_cstICMS.FormattingEnabled = true;
             this.cb_cstICMS.Location = new System.Drawing.Point(286, 31);
             this.cb_cstICMS.Name = "cb_cstICMS";
-            this.cb_cstICMS.Size = new System.Drawing.Size(393, 33);
+            this.cb_cstICMS.Size = new System.Drawing.Size(342, 33);
             this.cb_cstICMS.TabIndex = 15;
             // 
             // label11
@@ -1119,11 +1121,11 @@ namespace ImportadorXmlNFe
         private System.Windows.Forms.TextBox txt_Quantidade;
         private System.Windows.Forms.Label label27;
         private System.Windows.Forms.TextBox txt_PrecoCompra;
-        private System.Windows.Forms.Label label26;
         private System.Windows.Forms.Label label29;
         private System.Windows.Forms.TextBox txt_Referencia;
-        private System.Windows.Forms.CheckBox ckb_isFracionado;
+        private System.Windows.Forms.CheckBox chkb_isFracionado;
         private System.Windows.Forms.Label label30;
         private System.Windows.Forms.TextBox txt_CodigoBarras;
+        private System.Windows.Forms.CheckBox chkb_AlterarPrecos;
     }
 }
