@@ -18,7 +18,7 @@ using System.Windows.Forms;
 
 namespace ImportadorXmlNFe
 {
-    public partial class frmCadProdutoXmlNfe : Form
+    public partial class FrmCadProdutoXmlNfe : Form
     {
         SqlConnection _connection;
         ConectaDB _conectaDB;
@@ -34,7 +34,7 @@ namespace ImportadorXmlNFe
         int sw, sh;
         #endregion
 
-        public frmCadProdutoXmlNfe()
+        public FrmCadProdutoXmlNfe()
         {
             _conectaDB = new ConectaDB();
             InitializeComponent();   
@@ -137,7 +137,14 @@ namespace ImportadorXmlNFe
 
             FormataDataGridView();
 
-            BloqueiaEdicao(produtoNfe.isExiste);
+            isPermiteEdicao(produtoNfe.isExiste);
+
+            if (!produtoNfe.isAlteraPreco)
+            {
+                chkb_AlterarPrecos.Checked = true; //força o evento
+                chkb_AlterarPrecos.Checked = false;
+            }
+
         }
 
         #region Manipuladores de Eventos Atribuidos aos ComboBoxes manualmente
@@ -535,27 +542,26 @@ namespace ImportadorXmlNFe
             }
         }
 
-        private void BloqueiaEdicao(bool isExiste)
+        private void isPermiteEdicao(bool isExiste)
         {
-                txt_Nome.ReadOnly = !isExiste;
-                txt_Un.ReadOnly = !isExiste;
-                chkb_isFracionado.Enabled = !isExiste;
-                txt_Ncm.ReadOnly = !isExiste;
-                txt_CodigoBarras.ReadOnly = !isExiste;
-                txt_Referencia.ReadOnly = !isExiste;
-                chkb_AlterarPrecos.Checked = !isExiste;
-            
+            txt_Nome.ReadOnly = isExiste;
+            txt_Un.ReadOnly = isExiste;
+            chkb_isFracionado.Enabled = !isExiste;
+            txt_Ncm.ReadOnly = isExiste;
+            txt_CodigoBarras.ReadOnly = isExiste;
+            txt_Referencia.ReadOnly = isExiste;
         }
 
         private void CarregaDGVTabelasDePrecos()
         {
             try
             {
-                dgvTabelasDePrecos.DataSource = produtoNfe.ItensGradeProdutos.First().Precos;
+                dgvTabelasDePrecos.DataSource = produtoNfe.ItensGradeProdutos[0].Precos;
                 dgvTabelasDePrecos.Refresh();
             }
             catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine("Erro!:\nOcorreu um erro ao tentar carregar os preços para o produto: Método: CarregaDGVTabelasDePrecos(), Classe: FrmCadProdutoXmlNfe\n" + ex.Message + "\n" + ex.StackTrace);
                 throw ex;
             }
         }
@@ -596,6 +602,12 @@ namespace ImportadorXmlNFe
             bndChk_isPesavel.DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
             chkb_isFracionado.DataBindings.Clear();
             chkb_isFracionado.DataBindings.Add(bndChk_isPesavel);
+
+            System.Windows.Forms.Binding bndChk_isAlterarPrecos;
+            bndChk_isAlterarPrecos = new System.Windows.Forms.Binding("Checked", dataSourceProdutoNFe, "isAlteraPreco");
+            bndChk_isAlterarPrecos.DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
+            chkb_AlterarPrecos.DataBindings.Clear();
+            chkb_AlterarPrecos.DataBindings.Add(bndChk_isAlterarPrecos);
 
             System.Windows.Forms.Binding bndTxt_Quantidade;
             bndTxt_Quantidade = new System.Windows.Forms.Binding("Text", dataSourceProdutoNFe, "qCom");
@@ -707,19 +719,19 @@ namespace ImportadorXmlNFe
         } 
         private void chkb_AlterarPrecos_CheckStateChanged(object sender, EventArgs e)
         {
-            if (chkb_AlterarPrecos.Checked)
+            if (chkb_AlterarPrecos.CheckState == CheckState.Checked)
             {
                 dgvTabelasDePrecos.Enabled = true;
             }
             else
             {
-                dgvTabelasDePrecos.Enabled = false;
-
                 foreach (var preco in produtoNfe.ItensGradeProdutos[0].Precos)
                 {
                     preco.PrecoVenda = 0.0M;
                 }
                 CarregaDGVTabelasDePrecos();
+                dgvTabelasDePrecos.Enabled = false;
+                dgvTabelasDePrecos.Refresh();
             }
         }
         private void btnRestaurar_Click(object sender, EventArgs e)

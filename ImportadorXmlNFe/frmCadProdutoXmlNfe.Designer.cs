@@ -1,7 +1,7 @@
 ﻿
 namespace ImportadorXmlNFe
 {
-    partial class frmCadProdutoXmlNfe
+    partial class FrmCadProdutoXmlNfe
     {
         /// <summary>
         /// Required designer variable.
@@ -106,9 +106,10 @@ namespace ImportadorXmlNFe
             this.txt_Un = new System.Windows.Forms.TextBox();
             this.txt_Nome = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.btnRestaurar = new System.Windows.Forms.Button();
             this.panelBarraTitulo = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
+            this.BtnVincular = new System.Windows.Forms.Button();
+            this.btnRestaurar = new System.Windows.Forms.Button();
             this.btnRestore = new System.Windows.Forms.PictureBox();
             this.btnMinimize = new System.Windows.Forms.PictureBox();
             this.btnMax = new System.Windows.Forms.PictureBox();
@@ -360,7 +361,7 @@ namespace ImportadorXmlNFe
             this.panel7.Controls.Add(this.label16);
             this.panel7.Location = new System.Drawing.Point(13, 364);
             this.panel7.Name = "panel7";
-            this.panel7.Size = new System.Drawing.Size(675, 86);
+            this.panel7.Size = new System.Drawing.Size(624, 86);
             this.panel7.TabIndex = 48;
             // 
             // label25
@@ -423,7 +424,7 @@ namespace ImportadorXmlNFe
             this.cb_CstCofins.FormattingEnabled = true;
             this.cb_CstCofins.Location = new System.Drawing.Point(286, 31);
             this.cb_CstCofins.Name = "cb_CstCofins";
-            this.cb_CstCofins.Size = new System.Drawing.Size(342, 33);
+            this.cb_CstCofins.Size = new System.Drawing.Size(291, 33);
             this.cb_CstCofins.TabIndex = 32;
             // 
             // label16
@@ -450,7 +451,7 @@ namespace ImportadorXmlNFe
             this.panel6.Controls.Add(this.label12);
             this.panel6.Location = new System.Drawing.Point(13, 272);
             this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(675, 86);
+            this.panel6.Size = new System.Drawing.Size(624, 86);
             this.panel6.TabIndex = 47;
             // 
             // txt_vBC_PIS
@@ -516,7 +517,7 @@ namespace ImportadorXmlNFe
             this.cb_CstPIS.FormattingEnabled = true;
             this.cb_CstPIS.Location = new System.Drawing.Point(286, 28);
             this.cb_CstPIS.Name = "cb_CstPIS";
-            this.cb_CstPIS.Size = new System.Drawing.Size(342, 33);
+            this.cb_CstPIS.Size = new System.Drawing.Size(291, 33);
             this.cb_CstPIS.TabIndex = 22;
             // 
             // label12
@@ -545,7 +546,7 @@ namespace ImportadorXmlNFe
             this.panel5.Controls.Add(this.label13);
             this.panel5.Location = new System.Drawing.Point(13, 179);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(675, 86);
+            this.panel5.Size = new System.Drawing.Size(624, 86);
             this.panel5.TabIndex = 46;
             // 
             // label23
@@ -584,7 +585,7 @@ namespace ImportadorXmlNFe
             this.cb_cstIPI.FormattingEnabled = true;
             this.cb_cstIPI.Location = new System.Drawing.Point(377, 24);
             this.cb_cstIPI.Name = "cb_cstIPI";
-            this.cb_cstIPI.Size = new System.Drawing.Size(251, 33);
+            this.cb_cstIPI.Size = new System.Drawing.Size(200, 33);
             this.cb_cstIPI.TabIndex = 30;
             // 
             // label20
@@ -656,7 +657,7 @@ namespace ImportadorXmlNFe
             this.panel4.Controls.Add(this.label11);
             this.panel4.Location = new System.Drawing.Point(13, 87);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(675, 86);
+            this.panel4.Size = new System.Drawing.Size(624, 86);
             this.panel4.TabIndex = 45;
             // 
             // txt_vBC_ICMS
@@ -722,7 +723,7 @@ namespace ImportadorXmlNFe
             this.cb_cstICMS.FormattingEnabled = true;
             this.cb_cstICMS.Location = new System.Drawing.Point(286, 31);
             this.cb_cstICMS.Name = "cb_cstICMS";
-            this.cb_cstICMS.Size = new System.Drawing.Size(342, 33);
+            this.cb_cstICMS.Size = new System.Drawing.Size(291, 33);
             this.cb_cstICMS.TabIndex = 15;
             // 
             // label11
@@ -910,29 +911,13 @@ namespace ImportadorXmlNFe
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.Black;
+            this.panel1.Controls.Add(this.BtnVincular);
             this.panel1.Controls.Add(this.btnRestaurar);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel1.Location = new System.Drawing.Point(0, 40);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(200, 707);
             this.panel1.TabIndex = 1;
-            // 
-            // btnRestaurar
-            // 
-            this.btnRestaurar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(23)))), ((int)(((byte)(31)))));
-            this.btnRestaurar.FlatAppearance.BorderSize = 0;
-            this.btnRestaurar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnRestaurar.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnRestaurar.ForeColor = System.Drawing.SystemColors.Control;
-            this.btnRestaurar.Image = global::ImportadorXmlNFe.Properties.Resources.replay_48px;
-            this.btnRestaurar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.btnRestaurar.Location = new System.Drawing.Point(0, 283);
-            this.btnRestaurar.Name = "btnRestaurar";
-            this.btnRestaurar.Size = new System.Drawing.Size(200, 74);
-            this.btnRestaurar.TabIndex = 0;
-            this.btnRestaurar.Text = "Restaurar";
-            this.btnRestaurar.UseVisualStyleBackColor = false;
-            this.btnRestaurar.Click += new System.EventHandler(this.btnRestaurar_Click);
             // 
             // panelBarraTitulo
             // 
@@ -959,6 +944,39 @@ namespace ImportadorXmlNFe
             this.label1.Size = new System.Drawing.Size(278, 25);
             this.label1.TabIndex = 4;
             this.label1.Text = "Cadastro de Produtos pela NFe ";
+            // 
+            // BtnVincular
+            // 
+            this.BtnVincular.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(23)))), ((int)(((byte)(31)))));
+            this.BtnVincular.FlatAppearance.BorderSize = 0;
+            this.BtnVincular.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.BtnVincular.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BtnVincular.ForeColor = System.Drawing.SystemColors.Control;
+            this.BtnVincular.Image = global::ImportadorXmlNFe.Properties.Resources.bind_32;
+            this.BtnVincular.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.BtnVincular.Location = new System.Drawing.Point(0, 344);
+            this.BtnVincular.Name = "BtnVincular";
+            this.BtnVincular.Size = new System.Drawing.Size(200, 74);
+            this.BtnVincular.TabIndex = 1;
+            this.BtnVincular.Text = "Vincular";
+            this.BtnVincular.UseVisualStyleBackColor = false;
+            // 
+            // btnRestaurar
+            // 
+            this.btnRestaurar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(23)))), ((int)(((byte)(31)))));
+            this.btnRestaurar.FlatAppearance.BorderSize = 0;
+            this.btnRestaurar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnRestaurar.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnRestaurar.ForeColor = System.Drawing.SystemColors.Control;
+            this.btnRestaurar.Image = global::ImportadorXmlNFe.Properties.Resources.replay_48px;
+            this.btnRestaurar.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnRestaurar.Location = new System.Drawing.Point(0, 268);
+            this.btnRestaurar.Name = "btnRestaurar";
+            this.btnRestaurar.Size = new System.Drawing.Size(200, 74);
+            this.btnRestaurar.TabIndex = 0;
+            this.btnRestaurar.Text = "Restaurar";
+            this.btnRestaurar.UseVisualStyleBackColor = false;
+            this.btnRestaurar.Click += new System.EventHandler(this.btnRestaurar_Click);
             // 
             // btnRestore
             // 
@@ -1004,7 +1022,7 @@ namespace ImportadorXmlNFe
             this.btnClose.TabStop = false;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
-            // frmCadProdutoXmlNfe
+            // FrmCadProdutoXmlNfe
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -1012,7 +1030,7 @@ namespace ImportadorXmlNFe
             this.Controls.Add(this.panelBase);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.MinimumSize = new System.Drawing.Size(1012, 726);
-            this.Name = "frmCadProdutoXmlNfe";
+            this.Name = "FrmCadProdutoXmlNfe";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "frmCadProdutoXmlNfe";
             this.Load += new System.EventHandler(this.frmCadProdutoXmlNfe_Load);
@@ -1127,5 +1145,6 @@ namespace ImportadorXmlNFe
         private System.Windows.Forms.Label label30;
         private System.Windows.Forms.TextBox txt_CodigoBarras;
         private System.Windows.Forms.CheckBox chkb_AlterarPrecos;
+        private System.Windows.Forms.Button BtnVincular;
     }
 }

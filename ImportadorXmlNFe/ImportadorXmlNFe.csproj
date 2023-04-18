@@ -49,25 +49,34 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="frmCadProdutoXmlNfe.cs">
+    <Compile Include="FrmBuscaProdutos.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmCadProdutoXmlNfe.Designer.cs">
-      <DependentUpon>frmCadProdutoXmlNfe.cs</DependentUpon>
+    <Compile Include="FrmBuscaProdutos.Designer.cs">
+      <DependentUpon>FrmBuscaProdutos.cs</DependentUpon>
     </Compile>
-    <Compile Include="frmLerXMLNFe.cs">
+    <Compile Include="FrmCadProdutoXmlNfe.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="frmLerXMLNFe.Designer.cs">
-      <DependentUpon>frmLerXMLNFe.cs</DependentUpon>
+    <Compile Include="FrmCadProdutoXmlNfe.Designer.cs">
+      <DependentUpon>FrmCadProdutoXmlNfe.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmLerXMLNFe.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmLerXMLNFe.Designer.cs">
+      <DependentUpon>FrmLerXMLNFe.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="frmCadProdutoXmlNfe.resx">
-      <DependentUpon>frmCadProdutoXmlNfe.cs</DependentUpon>
+    <EmbeddedResource Include="FrmBuscaProdutos.resx">
+      <DependentUpon>FrmBuscaProdutos.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="frmLerXMLNFe.resx">
-      <DependentUpon>frmLerXMLNFe.cs</DependentUpon>
+    <EmbeddedResource Include="FrmCadProdutoXmlNfe.resx">
+      <DependentUpon>FrmCadProdutoXmlNfe.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrmLerXMLNFe.resx">
+      <DependentUpon>FrmLerXMLNFe.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -118,6 +127,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Img\replay_48px.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Img\bind_32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

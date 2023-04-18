@@ -20,13 +20,18 @@ using System.Xml;
 
 namespace ImportadorXmlNFe
 {
-    public partial class frmLerXMLNFe : Form
+    public partial class FrmLerXMLNFe : Form
     {
         #region Variaveis
-        SqlConnection _connection;
+        readonly SqlConnection _connection;
         TabelaDePrecoRepository tabelaDePrecoRepository;
         StatusNota statusNota;
         string caminhoArquivo;
+
+        /// <summary>
+        /// ChaveUnica do ItemGradeProduto retornada quando o item da NFe pré-existe no BD
+        /// </summary>
+        int chaveItemPreExistente = 0;
 
         #region Inteiros representam os ídices das Columns do DataGridView de Produtos
         private int colunaCodigo;
@@ -67,7 +72,7 @@ namespace ImportadorXmlNFe
 
         #endregion
 
-        public frmLerXMLNFe()
+        public FrmLerXMLNFe()
         {
             try
             {
@@ -124,9 +129,9 @@ namespace ImportadorXmlNFe
             LerDadosDestinatarioNFe();
             LerDadosProdutosXmlNFe();
 
-            if (isNotaRecebida(dadosNFe.IdNFe))
+            if (isNotaRecebida(TiposMovEstoque.Tipo.EntradaPorCompra, dadosNFe.IdNFe))
             {
-                notaConsultada  = dadosMoviEstoqueRepository.RetornaDadosMoviEstoque(dadosNFe.IdNFe);
+                notaConsultada  = dadosMoviEstoqueRepository.RetornaDadosMoviEstoque(TiposMovEstoque.Tipo.EntradaPorCompra, dadosNFe.IdNFe);
                 statusNota.status = StatusNota.Status.RECEBIDA;
             }
             else
@@ -151,7 +156,7 @@ namespace ImportadorXmlNFe
         {
             return (loja.CNPJ == destinatarioNFe.CNPJ) || (loja.CNPJ == destinatarioNFe.CPF) ? true : false;
         }
-        private bool isNotaRecebida(string chaveDeAcesso)
+        private bool isNotaRecebida(TiposMovEstoque.Tipo tipo, string chaveDeAcesso)
         {
             try
             {
@@ -162,7 +167,7 @@ namespace ImportadorXmlNFe
                 }
                 else
                 {
-                    return dadosMoviEstoqueRepository.ConsultaLancamentoNFe(chaveDeAcesso);
+                    return dadosMoviEstoqueRepository.ConsultaLancamentoNFe(tipo, chaveDeAcesso);
                 }
             }
             catch (Exception ex)
@@ -351,6 +356,10 @@ namespace ImportadorXmlNFe
 
         private void LerDadosProdutosXmlNFe()
         {
+            produtosParaDataGridColumns = new ObservableCollection<ProdutoNFeDataGridColumns>();
+            produtosNFE = new List<ProdutoNFe>();
+            dgvProdutos.Rows.Clear();
+
             if (caminhoArquivo != null)
             {
                 try
@@ -358,7 +367,7 @@ namespace ImportadorXmlNFe
                     using (XmlReader reader = XmlReader.Create(caminhoArquivo))
                     {
                         var fimItens = false;
-                        int intExiste = 0;
+                        chaveItemPreExistente = 0;
 
                         while (reader.Read())
                         {
@@ -416,7 +425,7 @@ namespace ImportadorXmlNFe
                                     }
 
                                     produtoDataGrid.cEAN = produtoNFe.cEAN;
-                                    intExiste = ExisteProdutoNFe(produtoNFe.XmlLink, produtoNFe.CodBarraForn);
+                                    chaveItemPreExistente = ExisteProdutoNFe(produtoNFe.XmlLink, produtoNFe.CodBarraForn);
                                     
                                 }
 
@@ -582,16 +591,20 @@ namespace ImportadorXmlNFe
                                     //Icon _unshared = new Icon("unshared.ico");
                                     #endregion
 
-                                    produtoNFe.isExiste = intExiste > 0 ? true : false;
+                                    produtoNFe.ChaveDeCriacao = dadosNFe.IdNFe;
+                                   
+                                    
+                                    produtoNFe.isExiste = chaveItemPreExistente > 0 ? true : false;
                                     produtoDataGrid.IsExiste = produtoNFe.isExiste;
 
-                                    produtoNFe.acaoProdNFe = intExiste > 0 ? TiposAcaoProdNFe.TiposAcoesNFe.Nenhum : TiposAcaoProdNFe.TiposAcoesNFe.Cadastrar;
-                                    produtoDataGrid.acaoProdNFe = produtoNFe.acaoProdNFe;
+                                    produtoNFe.AcaoProdNFe = chaveItemPreExistente > 0 ? TiposAcaoProdNFe.TiposAcoesNFe.Nenhum : TiposAcaoProdNFe.TiposAcoesNFe.Cadastrar;
+                                    produtoDataGrid.acaoProdNFe = produtoNFe.AcaoProdNFe;
 
                                     produtoNFe.emitenteNFe = emitenteNFe;
                                     produtoNFe.Loja = Program.Loja.Codigo;
 
-                                    CarregaTabelaDePrecosProdutoNFe(produtoNFe, intExiste);
+                                    CarregaTabelaDePrecosProdutoNFe(produtoNFe, chaveItemPreExistente);
+                                    produtoNFe.isAlteraPreco = false;
 
                                     produtosNFE.Add(produtoNFe);
                                     produtosParaDataGridColumns.Add(produtoDataGrid);
@@ -746,9 +759,9 @@ namespace ImportadorXmlNFe
 
                 ConnectionSingleton.Commit();
 
-                if (isNotaRecebida(dadosNFe.IdNFe))
+                if (isNotaRecebida(TiposMovEstoque.Tipo.EntradaPorCompra, dadosNFe.IdNFe))
                 {
-                    notaConsultada = dadosMoviEstoqueRepository.RetornaDadosMoviEstoque(dadosNFe.IdNFe);
+                    notaConsultada = dadosMoviEstoqueRepository.RetornaDadosMoviEstoque(TiposMovEstoque.Tipo.EntradaPorCompra, dadosNFe.IdNFe);
                     statusNota.status = StatusNota.Status.RECEBIDA;
                 }
             }
@@ -788,29 +801,30 @@ namespace ImportadorXmlNFe
                 };
 
                 dadosMoviEstoqueRepository.InserirDadosMoviEstoque(dadosMoviEstoque);
-                dadosMoviEstoque.Codigo = dadosMoviEstoqueRepository.RetornaDadosMoviEstoque(dadosNFe.IdNFe).Codigo;
+                dadosMoviEstoque.Codigo = dadosMoviEstoqueRepository.RetornaDadosMoviEstoque(TiposMovEstoque.Tipo.EntradaPorCompra, dadosNFe.IdNFe).Codigo;
                 #endregion
 
                 foreach (var _produtoNFe in produtosNFE)
                 {
-                    int chaveItem = ExisteProdutoNFe(_produtoNFe.ItensGradeProdutos[0].XmlLink, _produtoNFe.ItensGradeProdutos[0].CodBarraForn);
-                    _produtoNFe.isExiste = chaveItem > 0 ? true : false; //LINHA NOVA
-
                     CadProduto cadProd = ProdutoNFeMappings.MapToCadProduto(_produtoNFe);
+                    cadProd.ItensGrade = new List<ItemGradeProduto>();
+                    cadProd.ItensGrade.Add(ProdutoNFeMappings.MapToItemGradeProduto(_produtoNFe));
+                    int chaveItem = ExisteProdutoNFe(_produtoNFe.XmlLink, _produtoNFe.ItensGradeProdutos[0].CodBarraForn);
+                    _produtoNFe.ItensGradeProdutos[0].ChaveUnica = chaveItem;
+                    _produtoNFe.isExiste = chaveItem > 0 ? true : false; //LINHA NOVA
 
                     cadProd.DataCadastro = DateTime.Today;
                     cadProd.Codigo = produtoRepository.RetornaCodigoProdutoPelaChaveUnicaDoItemGrade(chaveItem);
                     cadProd.Ativado = true;
-                    cadProd.ItensGrade = new List<ItemGradeProduto>();
-                    cadProd.ItensGrade.Add(ProdutoNFeMappings.MapToItemGradeProduto(_produtoNFe));
+                    
                     cadProd.ItensGrade[0].Precos = _produtoNFe.ItensGradeProdutos[0].Precos;
                     cadProd.ItensGrade[0].EstoqueNasFiliais = new List<EstoqueFilial>();
                    
                     if ((!_produtoNFe.isExiste) & (!_produtoNFe.isDuplicado) )
                     {
+
                         chaveItem = produtoRepository.CadastraProdutoRetornaChaveItemGrade(cadProd);
                         _produtoNFe.ItensGradeProdutos[0].ChaveUnica = chaveItem;
-                        _produtoNFe.isAlteraPreco = true;
                         ItemMovEstoque item = new ItemMovEstoque()
                         {
                             Codigo = dadosMoviEstoque.Codigo,
@@ -915,14 +929,14 @@ namespace ImportadorXmlNFe
                          * O bloco condicional será mantido por precaução
                          */
                         #endregion
-                        MovimentaEstoqueProdutosDuplicados(ref cadProd, chaveItem, estoqueFilialRepository, dadosMoviEstoque, _produtoNFe);
+                        MovimentaEstoqueProdutosExistentes(TiposMovEstoque.Tipo.EntradaPorCompra, ref cadProd, chaveItem, estoqueFilialRepository, dadosMoviEstoque, _produtoNFe);
                         produtoRepository.UpdatePelaNFe(cadProd);
                     }
 
                     else if ((_produtoNFe.isExiste) & (_produtoNFe.isDuplicado)) 
                     {
                         //ATUALIZA(RIA) CADASTRO E MOVIMENTA ESTOQUE
-                        MovimentaEstoqueProdutosDuplicados(ref cadProd, chaveItem, estoqueFilialRepository, dadosMoviEstoque, _produtoNFe);
+                        MovimentaEstoqueProdutosExistentes(TiposMovEstoque.Tipo.EntradaPorCompra, ref cadProd, chaveItem, estoqueFilialRepository, dadosMoviEstoque, _produtoNFe);
                         produtoRepository.UpdatePelaNFe(cadProd);
                     }
                 }
@@ -955,7 +969,7 @@ namespace ImportadorXmlNFe
 
         }
 
-        private void MovimentaEstoqueProdutosDuplicados(ref CadProduto cadProd, int chaveItem, EstoqueFilialRepository estoqueFilialRepository, DadosMoviEstoque dadosMoviEstoque, ProdutoNFe _produtoNFe)
+        private void MovimentaEstoqueProdutosExistentes(TiposMovEstoque.Tipo tipoMov, ref CadProduto cadProd, int chaveItem, EstoqueFilialRepository estoqueFilialRepository, DadosMoviEstoque dadosMoviEstoqueAtual, ProdutoNFe _produtoNFe)
         {
             cadProd.Chaveunica = produtoRepository.RetornaChaveUnicaProdutoPelaChaveDoItemGrade(chaveItem);
 
@@ -968,42 +982,92 @@ namespace ImportadorXmlNFe
                         new EstoqueFilial()
                         {
                             CodigoProduto = chaveItem,
-                            CodigoFilial = (int)cb_LocaisDeEstoque.SelectedValue,
-                            CodigoLoja = loja.Codigo
-                                        //Estoque      = item.EstoqueInicial
+                            CodigoFilial  = (int)cb_LocaisDeEstoque.SelectedValue,
+                            CodigoLoja    = loja.Codigo
+                            //Estoque     = item.EstoqueInicial
                                     }
                     );
-
                 decimal estoqueAnterior = estoqueFilialRepository.ConsultaEstoqueDoItem(item.EstoqueNasFiliais[0]);
+
+                string _nomeMov = string.Empty;
+                string _tipoMov = string.Empty;
+                decimal _estoqueAtual = default(decimal);
+                int _codMov = (int)tipoMov;
+                switch (tipoMov)
+                {
+                    case TiposMovEstoque.Tipo.ZeroBase:
+                        break;
+
+                    case TiposMovEstoque.Tipo.EntradaPorCompra:
+                        _nomeMov = "Entrada por Compra";
+                        _tipoMov = "E";
+                        _estoqueAtual = estoqueAnterior + cadProd.ItensGrade[0].EstoqueInicial;
+                        break;
+
+                    case TiposMovEstoque.Tipo.SaidaPorVenda:
+                        _nomeMov = "Saída por Venda";
+                        _tipoMov = "S";
+                        _estoqueAtual = estoqueAnterior - cadProd.ItensGrade[0].EstoqueInicial;
+                        break;
+
+                    case TiposMovEstoque.Tipo.AjusteDeEntrada:
+                        _nomeMov = "Ajuste de Entrada";
+                        _tipoMov = "E";
+                        _estoqueAtual = estoqueAnterior + cadProd.ItensGrade[0].EstoqueInicial;
+                        break;
+
+                    case TiposMovEstoque.Tipo.AjusteDeSaida:
+                        _nomeMov = "Ajuste de Saída";
+                        _tipoMov = "S";
+                        _estoqueAtual = estoqueAnterior - cadProd.ItensGrade[0].EstoqueInicial;
+                        break;
+
+                    default:
+                        break;
+                }
 
                 ItemMovEstoque itemMovEstoque = new ItemMovEstoque()
                 {
-                    Codigo = dadosMoviEstoque.Codigo,
+                    Codigo = dadosMoviEstoqueAtual.Codigo,
                     CodProd = item.ChaveUnica,
-                    CodMov = dadosMoviEstoque.CodMov,
-                    NomeMov = dadosMoviEstoque.NomeMov,
-                    TipoMov = dadosMoviEstoque.TipoMov,
+                    CodMov = _codMov.ToString(),
+                    NomeMov = _nomeMov,
+                    TipoMov = _tipoMov,
                     CodCor = string.Empty,
                     CodTam = string.Empty,
-                    Data = dadosMoviEstoque.Data,
+                    Data = dadosMoviEstoqueAtual.Data,
                     Quantidade = cadProd.ItensGrade[0].EstoqueInicial,
                     Preco = cadProd.ItensGrade[0].PrecoCompra,
                     Total = Decimal.Parse(_produtoNFe.vProd),
                     Ref = string.IsNullOrEmpty(cadProd.ItensGrade[0].Referencia) ? string.Empty : cadProd.ItensGrade[0].Referencia,
                     Loja = loja.Codigo,
                     EstoqueAnterior = (float)estoqueAnterior,
-                    EstoqueAtual = (float)estoqueAnterior + (float)cadProd.ItensGrade[0].EstoqueInicial
+                    EstoqueAtual = (float)_estoqueAtual
                 };
 
                 dadosMoviEstoqueRepository.InserirItemMovEstoque(itemMovEstoque);
 
-                item.EstoqueNasFiliais[0].Estoque = (decimal)itemMovEstoque.EstoqueAtual;
+                foreach (var filial in Program.Loja.Filiais)
+                {
+                    item.EstoqueNasFiliais.Add(
+                       new EstoqueFilial
+                       {
+                           CodigoLoja = filial.CodigoLoja,
+                           CodigoFilial = filial.CodigoFilial,
+                           CodigoProduto = item.ChaveUnica,
+                           Estoque = filial.CodigoFilial == (int)cb_LocaisDeEstoque.SelectedValue ? (decimal)itemMovEstoque.EstoqueAtual : 0
+                       }
+                        );
+                }
+                foreach (EstoqueFilial estoque in cadProd.ItensGrade[0].EstoqueNasFiliais)
+                {
+                    estoqueFilialRepository.AtualizaEstoqueDoItem(estoque);
+                }
             }
         }
 
         private void BindAcoes(ObservableCollection<ProdutoNFeDataGridColumns> lista)
         {
-
             bndSourceProdutosDataGrid = new BindingSource();
 
             List<AcoesProdutoNFe> acoes = new List<AcoesProdutoNFe>()
@@ -1058,7 +1122,7 @@ namespace ImportadorXmlNFe
                         produtosNFE[ProximaLinha.Index].isDuplicado = true; //Na List de produtos que serão cadastrados, seta o seu item correspondente no DataGridView, como duplicado
 
                         DataGridViewCellStyle style = new DataGridViewCellStyle();
-                        style.BackColor = Color.WhiteSmoke;
+                        style.BackColor = Color.LightGray;
                         ProximaLinha.DefaultCellStyle = style;
                     }
 
@@ -1099,26 +1163,22 @@ namespace ImportadorXmlNFe
             if (prod.ItensGradeProdutos == null)
             {
                 prod.ItensGradeProdutos = new List<ItemGradeProduto>();
-
                 prod.ItensGradeProdutos.Add
                     (new ItemGradeProduto
                     {
                         ChaveUnica = chaveUnicaItem,
                         Loja = Program.Loja.Codigo,
                         CodBarraForn = prod.CodBarraForn,
-                        EstoqueInicial = prod.qCom
+                        EstoqueInicial = prod.qCom,
+                        ChaveDeCriacao = prod.ChaveDeCriacao
                     });
-
             }
 
             foreach (var item in prod.ItensGradeProdutos)
             {
-
-
                 if (item.Precos == null)
                 {
                     item.Precos = new List<ItemTabelaPreco>();
-
                     List<TabelaDePreco> tabelas = tabelaDePrecoRepository.RetornaTabelaDePrecos();
 
                     if (tabelas.Count > 0)
@@ -1149,7 +1209,7 @@ namespace ImportadorXmlNFe
                 }
                 else
                 {
-                    frmCadProdutoXmlNfe formProdNFe = new frmCadProdutoXmlNfe();
+                    FrmCadProdutoXmlNfe formProdNFe = new FrmCadProdutoXmlNfe();
 
                     formProdNFe.produtoNfe = produtosNFE.Find(p => p.cProd == ((ProdutoNFeDataGridColumns)bndSourceProdutosDataGrid.Current).cProd);
 
@@ -1187,7 +1247,7 @@ namespace ImportadorXmlNFe
                 lblMensagemStatus.Text = "LEIA UM ARQUIVO";
             }
 
-            if (statusNota.status == StatusNota.Status.NAORECEBER)
+            if (statusNota.status == StatusNota.Status.NAO_RECEBER)
             {
                 panelStatus.BackColor = Color.Red;
                 lblMensagemStatus.Text = "DESTINATÁRIO NÃO PERMITIDO";
@@ -1197,7 +1257,122 @@ namespace ImportadorXmlNFe
 
         private void btnCancelarXML_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Função em Desenvolvimento. Entre em contato com o suporte para previsão", "Mensagem da DinnamuS", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (dadosNFe != null)
+            {
+                if (statusNota.status != StatusNota.Status.RECEBIDA)
+                {
+                    MessageBox.Show("Não é possível excluir a Nota Fiscal nº " + dadosNFe.cNF + ", pois ela não foi recebida", "Estorno de NotaFiscal", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    return;
+                }
+
+                if (MessageBox.Show("Confirma o ESTORNO da NFe de nº: " + dadosNFe.cNF, "Estorno de Recebimento de NFe", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    try
+                    {
+                        ConnectionSingleton.BeginTransaction();
+                        EstoqueFilialRepository estoqueFilialRepository = new EstoqueFilialRepository();
+                        #region Insere a Movimentação de Estoque (DadosMoviEstoque)
+                        int _codMov = (int)TiposMovEstoque.Tipo.AjusteDeSaida;
+
+                        DadosMoviEstoque movimentacaoAtual = new DadosMoviEstoque()
+                        {
+                            CodMov = _codMov.ToString(),
+                            NomeMov = "Ajuste de Saida",
+                            TipoMov = "S",
+                            Data = DateTime.Today,
+                            Feito = "S",
+                            Loja = Program.Loja.Codigo,
+                            CodigoFilial = (int)cb_LocaisDeEstoque.SelectedValue,
+                            Valor = dadosNFe.totalNFe,
+                            ChaveNFe = dadosNFe.IdNFe
+
+                        };
+
+                        movimentacaoAtual.Codigo = dadosMoviEstoqueRepository.InserirDadosMoviEstoque(movimentacaoAtual);
+                        DadosMoviEstoque movimentacaoAnterior = dadosMoviEstoqueRepository.RetornaDadosMoviEstoque(TiposMovEstoque.Tipo.EntradaPorCompra, dadosNFe.IdNFe);
+                        dadosMoviEstoqueRepository.DesvinculaMoviEstoqueDaNFe(movimentacaoAnterior.Codigo, dadosNFe.IdNFe);
+                        #endregion
+
+                        #region Registra movimento de saída na ItensMovEstoque
+                        foreach (var _produtoNFe in produtosNFE)
+                        {
+                            if (_produtoNFe.isExiste)
+                            {
+                                CadProduto cadProd = new CadProduto();
+                                cadProd.Codigo = produtoRepository.RetornaCodigoProdutoPelaChaveUnicaDoItemGrade(_produtoNFe.ItensGradeProdutos[0].ChaveUnica);
+                                bool excluirDaCadProduto = true;
+                                if (produtoRepository.RetornaProduto(cadProd.Codigo).ChaveDeCriacao == dadosNFe.IdNFe)
+                                {
+                                    foreach (var item in _produtoNFe.ItensGradeProdutos)
+                                    {
+                                        ItemMovEstoque itemMov = new ItemMovEstoque();
+                                        itemMov.CodProd = item.ChaveUnica;
+                                        itemMov.Codigo = movimentacaoAnterior.Codigo;
+                                        itemMov.Data = movimentacaoAnterior.Data;
+
+                                        if (dadosMoviEstoqueRepository.ExisteMovimentacaoPosterior(itemMov))
+                                        {
+                                            excluirDaCadProduto = false;
+                                            MovimentaEstoqueProdutosExistentes(TiposMovEstoque.Tipo.AjusteDeSaida, ref cadProd, item.ChaveUnica, estoqueFilialRepository, movimentacaoAtual, _produtoNFe);
+                                        }
+
+                                        else
+                                        {
+                                            produtoRepository.DeleteItemGradeProduto(item.ChaveUnica);
+                                        }
+                                    }
+
+                                    if (excluirDaCadProduto)
+                                    {
+                                        produtoRepository.Delete(cadProd.Codigo);
+                                        _produtoNFe.isExiste = false;
+
+                                        foreach (ProdutoNFe _prod in produtosNFE)
+                                        {
+                                            if (_produtoNFe.XmlLink == _prod.XmlLink)
+                                            {
+                                                _prod.isExiste = false;
+                                            }
+                                        }
+
+                                    }
+                                }
+
+                                else
+                                {
+                                    int chaveUnicaItem = _produtoNFe.ItensGradeProdutos[0].ChaveUnica;
+                                    cadProd.ItensGrade = _produtoNFe.ItensGradeProdutos;
+                                    MovimentaEstoqueProdutosExistentes(TiposMovEstoque.Tipo.AjusteDeSaida, ref cadProd, chaveUnicaItem, estoqueFilialRepository, movimentacaoAtual, _produtoNFe);
+                                }
+                            }
+                        }
+                        #endregion
+
+                        ConnectionSingleton.Commit();
+
+                        LerDadosXmlNFe();
+                        LerDadosEmitenteXmlNFe();
+                        LerDadosDestinatarioNFe();
+                        LerDadosProdutosXmlNFe();
+                        statusNota.status = StatusNota.Status.ARECEBER;
+
+                        MessageBox.Show($"A Nota Fiscal nº {dadosNFe.cNF} foi estornada com sucesso!", "Estorno de NotaFiscal", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine("Erro!:\nOcorreu um erro ao ESTORNAR a NFe.\n" + ex.Message + "\n" + ex.StackTrace);
+
+                        try
+                        {
+                            ConnectionSingleton.RollBack();
+                        }
+                        catch (Exception exRollback)
+                        {
+                            throw exRollback;
+                        }
+                    }   
+                }
+            }
         }
     }
 
@@ -1276,13 +1451,14 @@ namespace ImportadorXmlNFe
 
         public enum Status
         {
-            
             ARECEBER,
             RECEBENDO,
             RECEBIDA,
             ALER,
-            NAORECEBER
+            NAO_RECEBER,
+            NOTA_ESTORNADA
         }
+
     }
 
 }

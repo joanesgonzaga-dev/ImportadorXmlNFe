@@ -63,6 +63,16 @@ namespace ImportadorXmlNFe.Properties {
         /// <summary>
         ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap bind_32 {
+            get {
+                object obj = ResourceManager.GetObject("bind_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Consulta um recurso localizado do tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap close_32 {
             get {
                 object obj = ResourceManager.GetObject("close_32", resourceCulture);

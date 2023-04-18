@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace ImportadorXmlNFe
 {
-    partial class frmLerXMLNFe
+    partial class FrmLerXMLNFe
     {
         /// <summary>
         /// Required designer variable.

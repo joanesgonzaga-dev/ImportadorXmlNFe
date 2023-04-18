@@ -30,7 +30,7 @@ namespace ImportadorXmlNFe
             {
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new frmLerXMLNFe());
+                Application.Run(new FrmLerXMLNFe());
             }
         }
     }
