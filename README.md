@@ -6,3 +6,5 @@ Aplicativo desktop para importação dos dados do XML da NFe para à base de dad
 <li>Serilog 2.5.0</li>
 <li>AutoMapper 3.3.1</li>
 
+<h2>Layout:</h2>
+<li>Windows Forms Application</li>
