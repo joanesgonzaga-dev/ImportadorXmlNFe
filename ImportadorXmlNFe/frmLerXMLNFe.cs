@@ -2,17 +2,18 @@
 using DinnamuS_Desktop_2._0.Data.Persistence;
 using DinnamuS_Desktop_2._0.Model;
 using DinnamuS_Desktop_2._0.Model.Estoque;
+using DinnamuS_Desktop_2._0.Model.Fiscal;
 using DinnamuS_Desktop_2._0.Model.Infra;
 using DinnamuS_Desktop_2._0.Model.NFe;
 using DinnamuS_Desktop_2._0.Model.Produto;
 using DinnamuS_Desktop_2._0.Model.Produto.ProdutoXMLNFe;
 using DinnamuS_Desktop_2._0.Utils;
 using DinnamuS_Desktop_2._0.Utils.Mapping;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Windows.Forms;
@@ -71,9 +72,11 @@ namespace ImportadorXmlNFe
         DadosMoviEstoqueRepository dadosMoviEstoqueRepository;
 
         #endregion
-
         public FrmLerXMLNFe()
         {
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.File("logs\\log-.txt", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
             try
             {
                 loja = Program.Loja;
@@ -94,7 +97,9 @@ namespace ImportadorXmlNFe
             }
             catch (Exception ex)
             {
+                Log.Error(ex, "Ocorreu um erro ao construir o aplicativo \n" + "new frmLerXMLNFe()" + ex.Message + "\n" + ex.StackTrace);
                 MessageBox.Show("Ocorreu um erro ao construir o aplicativo \n" + "new frmLerXMLNFe()" + ex.Message + "\n" + ex.StackTrace);
+                Log.CloseAndFlush();
             }
         }
         private void frmLerXMLNFe_Load(object sender, EventArgs e)
@@ -121,8 +126,21 @@ namespace ImportadorXmlNFe
             produtosParaDataGridColumns = new ObservableCollection<ProdutoNFeDataGridColumns>();
 
             caminhoArquivo = AbrirArquivo(null);
-
             txtLocalXML.Text = caminhoArquivo;
+
+            try
+            {
+                caminhoArquivo = new Uri(caminhoArquivo, UriKind.Absolute).AbsoluteUri;
+                if (!Uri.IsWellFormedUriString(caminhoArquivo, UriKind.Absolute))
+                {
+                    throw new Exception();
+                }
+            }
+            catch (Exception)
+            {
+                LimpaComponentes();
+                return;
+            }
 
             LerDadosXmlNFe();
             LerDadosEmitenteXmlNFe();
@@ -131,7 +149,7 @@ namespace ImportadorXmlNFe
 
             if (isNotaRecebida(TiposMovEstoque.Tipo.EntradaPorCompra, dadosNFe.IdNFe))
             {
-                notaConsultada  = dadosMoviEstoqueRepository.RetornaDadosMoviEstoque(TiposMovEstoque.Tipo.EntradaPorCompra, dadosNFe.IdNFe);
+                notaConsultada = dadosMoviEstoqueRepository.RetornaDadosMoviEstoque(TiposMovEstoque.Tipo.EntradaPorCompra, dadosNFe.IdNFe);
                 statusNota.status = StatusNota.Status.RECEBIDA;
             }
             else
@@ -141,7 +159,7 @@ namespace ImportadorXmlNFe
 
             //if (!ValidaDestinatario(destinatarioNFe, loja))
             //{
-            //    statusNota.status = StatusNota.Status.NAORECEBER;
+            //    statusNota.status = StatusNota.Status.NAO_RECEBER;
             //    btnImportarXML.Enabled = false;
             //    btnCancelarXML.Enabled = false;
             //}
@@ -172,6 +190,7 @@ namespace ImportadorXmlNFe
             }
             catch (Exception ex)
             {
+                Log.Error(ex, $"Não foi possível consultar se a nota já foi recebida. Método isNotaRecebida(chaveDeAcesso)\n{ex.Message}\n{ex.StackTrace}");
                 throw ex;
             }
         }
@@ -179,38 +198,34 @@ namespace ImportadorXmlNFe
         {
             try
             {
-                if (caminhoArquivo != null)
+                dadosNFe = new NFe();
+                using (XmlReader reader = XmlReader.Create(caminhoArquivo))
                 {
-                    dadosNFe = new NFe();
-
-                    using (XmlReader reader = XmlReader.Create(caminhoArquivo))
+                    while (reader.Read())
                     {
-                        while (reader.Read())
+                        if (reader.NodeType == XmlNodeType.Element && reader.Name == "infNFe")
                         {
-                            if (reader.NodeType == XmlNodeType.Element && reader.Name == "infNFe")
-                            {
-                                dadosNFe.IdNFe = reader.GetAttribute("Id");
-                                txtChaveDeAcesso.Text = dadosNFe.IdNFe;
-                            }
+                            dadosNFe.IdNFe = reader.GetAttribute("Id");
+                            txtChaveDeAcesso.Text = dadosNFe.IdNFe;
+                        }
 
-                            if (reader.NodeType == XmlNodeType.Element && reader.Name == "cNF")
-                            {
-                                dadosNFe.cNF = reader.ReadElementContentAsString();
-                                txtNumeroNota.Text = dadosNFe.cNF;
-                            }
+                        if (reader.NodeType == XmlNodeType.Element && reader.Name == "cNF")
+                        {
+                            dadosNFe.cNF = reader.ReadElementContentAsString();
+                            txtNumeroNota.Text = dadosNFe.cNF;
+                        }
 
-                            if (reader.NodeType == XmlNodeType.Element && reader.Name == "dhEmi")
-                            {
-                                dadosNFe.dhEmi = reader.ReadElementContentAsDateTime();
-                                dateEmissao.Value = dadosNFe.dhEmi;
-                            }
+                        if (reader.NodeType == XmlNodeType.Element && reader.Name == "dhEmi")
+                        {
+                            dadosNFe.dhEmi = reader.ReadElementContentAsDateTime();
+                            dateEmissao.Value = dadosNFe.dhEmi;
+                        }
 
-                            if (reader.NodeType == XmlNodeType.Element && reader.Name == "pag")
+                        if (reader.NodeType == XmlNodeType.Element && reader.Name == "pag")
+                        {
+                            if (reader.ReadToDescendant("vPag"))
                             {
-                                if (reader.ReadToDescendant("vPag"))
-                                {
-                                    dadosNFe.totalNFe = reader.ReadElementContentAsDecimal();
-                                }
+                                dadosNFe.totalNFe = reader.ReadElementContentAsDecimal();
                             }
                         }
                     }
@@ -218,16 +233,16 @@ namespace ImportadorXmlNFe
             }
             catch (Exception ex)
             {
+                Log.Error(ex, $"{ex.Message}\n {ex.StackTrace}");
                 MessageBox.Show("Ocorreu um erro ao ler o cabeçalho da NFe \n" + "frmLerXMLNFe.LerDadosXmlNFe()" + ex.Message + "\n" + ex.StackTrace);
             }
         }
         private void LerDadosEmitenteXmlNFe()
         {
-            if (caminhoArquivo != null)
+            try
             {
                 emitenteNFe = new EmitenteNFe();
                 bool isEmitente = false;
-
                 using (XmlReader reader = XmlReader.Create(caminhoArquivo))
                 {
                     while (reader.Read())
@@ -270,16 +285,20 @@ namespace ImportadorXmlNFe
                             if (reader.NodeType == XmlNodeType.Element && reader.Name == "CRT")
                             {
                                 emitenteNFe.CRT = reader.ReadElementContentAsInt();
-
                             }
                         }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"Não foi possível ler os dados do emitente. Método: LerDadosEmitenteXmlNFe().\n{ex.Message}\n{ex.StackTrace}");
+                throw ex;
+            }
         }
         private void LerDadosDestinatarioNFe()
         {
-            if (caminhoArquivo != null)
+            try
             {
                 destinatarioNFe = new DestinatarioNFe();
                 bool isDestinatario = false;
@@ -291,6 +310,11 @@ namespace ImportadorXmlNFe
                         if (reader.NodeType == XmlNodeType.Element && reader.Name == "dest")
                         {
                             isDestinatario = true;
+                        }
+
+                        else if (reader.NodeType == XmlNodeType.Element && reader.Name == "autXML")
+                        {
+                            break;
                         }
 
                         else if (reader.NodeType == XmlNodeType.Element && reader.Name == "det")
@@ -332,15 +356,21 @@ namespace ImportadorXmlNFe
 
                             //if (reader.NodeType == XmlNodeType.Element && reader.Name == "CRT")
                             //{
-                            //    emitenteNFe.CRT = reader.ReadElementContentAsInt();
-
+                            //    destinatarioNFe.CRT = reader.ReadElementContentAsInt();
                             //}
+
+                            
+                            destinatarioNFe.CRT = Program.Loja.CodigoRegimeTributario;
                         }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"Não foi possível ler os dados do destinatário. Método: LerDadosDestinatarioNFe().\n{ex.Message}\n{ex.StackTrace}");
+                throw ex;
+            }
         }
-
         private void LimpaComponentes()
         {
             txtNumeroNota.Text = "";
@@ -352,6 +382,12 @@ namespace ImportadorXmlNFe
 
             txtDestinatario.Text = "Não informado";
             txtDestinatarioCNPJ.Text = "";
+
+            emitenteNFe = null;
+            dadosNFe = null;
+            destinatarioNFe = null;
+            dgvProdutos.Rows.Clear();
+            statusNota.status = StatusNota.Status.ALER;
         }
 
         private void LerDadosProdutosXmlNFe()
@@ -359,273 +395,317 @@ namespace ImportadorXmlNFe
             produtosParaDataGridColumns = new ObservableCollection<ProdutoNFeDataGridColumns>();
             produtosNFE = new List<ProdutoNFe>();
             dgvProdutos.Rows.Clear();
-
-            if (caminhoArquivo != null)
+            try
             {
-                try
+                using (XmlReader reader = XmlReader.Create(caminhoArquivo))
                 {
-                    using (XmlReader reader = XmlReader.Create(caminhoArquivo))
+                    var fimItens = false;
+                    chaveItemPreExistente = 0;
+
+                    while (reader.Read())
                     {
-                        var fimItens = false;
-                        chaveItemPreExistente = 0;
-
-                        while (reader.Read())
+                        if (reader.NodeType == XmlNodeType.Element && reader.Name == "det")
                         {
-                            if (reader.NodeType == XmlNodeType.Element && reader.Name == "det")
+                            produtoNFe = new ProdutoNFe();
+                            produtoDataGrid = new ProdutoNFeDataGridColumns();
+                            produtoNFe.PadroesFiscaisProdutoOrigem = new Dictionary<Impostos.TipoDeImposto, PadraoFiscalProdutoOrigem>();
+                        }
+
+                        else if (reader.NodeType == XmlNodeType.Element && reader.Name == "total")
+                        {
+                            fimItens = true;
+                        }
+
+                        if (!fimItens && reader.NodeType == XmlNodeType.Element)
+                        {
+                            if (reader.Name == "cProd")
                             {
-                                produtoNFe = new ProdutoNFe();
-                                produtoDataGrid = new ProdutoNFeDataGridColumns();
+                                produtoNFe.cProd = reader.ReadElementContentAsString();
+                                produtoDataGrid.cProd = produtoNFe.cProd;
                             }
 
-                            else if (reader.NodeType == XmlNodeType.Element && reader.Name == "total")
+                            if (reader.Name == "cEAN")
                             {
-                                fimItens = true;
-                            }
+                                produtoNFe.cEAN = reader.ReadElementContentAsString();
 
-                            if (!fimItens && reader.NodeType == XmlNodeType.Element)
-                            {
-                                if (reader.Name == "cProd")
+                                if (!string.IsNullOrEmpty(produtoNFe.cEAN) || !produtoNFe.cEAN.Equals(""))
                                 {
-                                    produtoNFe.cProd = reader.ReadElementContentAsString();
-                                    produtoDataGrid.cProd = produtoNFe.cProd;
-                                }
-
-                                if (reader.Name == "cEAN")
-                                {
-                                    produtoNFe.cEAN = reader.ReadElementContentAsString();
-
-                                    if (!string.IsNullOrEmpty(produtoNFe.cEAN) || !produtoNFe.cEAN.Equals(""))
+                                    bool isEAN = true;
+                                    for (int i = 0; i < produtoNFe.cEAN.Length; i++)
                                     {
-                                        bool isEAN = true;
-                                        for (int i = 0; i < produtoNFe.cEAN.Length; i++)
-                                        {
-                                            char c = produtoNFe.cEAN[i];
+                                        char c = produtoNFe.cEAN[i];
 
-                                            if (!DinnamuS_Desktop_2._0.Utils.ValidaNumero.Validar(c))
-                                            {
-                                                isEAN = false;
-                                                break;
-                                            }
+                                        if (!DinnamuS_Desktop_2._0.Utils.ValidaNumero.Validar(c))
+                                        {
+                                            isEAN = false;
+                                            break;
                                         }
+                                    }
 
-                                        if (isEAN)
-                                        {
-                                            produtoNFe.CodBarraForn = produtoNFe.cEAN;
-                                            produtoNFe.XmlLink = produtoNFe.cEAN;
-                                        }
-                                        else
-                                        {
-                                            produtoNFe.XmlLink = produtoNFe.cProd;
-                                        }
+                                    if (isEAN)
+                                    {
+                                        produtoNFe.CodBarraForn = produtoNFe.cEAN;
+                                        produtoNFe.XmlLink = produtoNFe.cEAN;
                                     }
                                     else
                                     {
-                                        //produtoNFe.CodBarraForn = produtoNFe.cEAN;
                                         produtoNFe.XmlLink = produtoNFe.cProd;
                                     }
-
-                                    produtoDataGrid.cEAN = produtoNFe.cEAN;
-                                    chaveItemPreExistente = ExisteProdutoNFe(produtoNFe.XmlLink, produtoNFe.CodBarraForn);
-                                    
                                 }
-
-                                if (reader.Name == "xProd")
+                                else
                                 {
-                                    produtoNFe.xProd = reader.ReadElementContentAsString();
-                                    produtoDataGrid.xProd = produtoNFe.xProd;
+                                    //produtoNFe.CodBarraForn = produtoNFe.cEAN;
+                                    produtoNFe.XmlLink = produtoNFe.cProd;
                                 }
 
-                                if (reader.Name == "uCom")
+                                produtoDataGrid.cEAN = produtoNFe.cEAN;
+                                chaveItemPreExistente = ExisteProdutoNFe(produtoNFe.XmlLink, produtoNFe.CodBarraForn);
+
+                            }
+
+                            if (reader.Name == "xProd")
+                            {
+                                produtoNFe.xProd = reader.ReadElementContentAsString();
+                                produtoDataGrid.xProd = produtoNFe.xProd;
+                            }
+
+                            if (reader.Name == "uCom")
+                            {
+                                produtoNFe.uCom = reader.ReadElementContentAsString();
+                            }
+
+                            if (reader.Name == "qCom")
+                            {
+                                produtoNFe.qCom = reader.ReadElementContentAsDecimal();
+                                produtoDataGrid.qCom = produtoNFe.qCom.ToString();
+                            }
+
+                            if (reader.Name == "vUnCom")
+                            {
+                                produtoNFe.vUnCom = reader.ReadElementContentAsDecimal();
+                                produtoDataGrid.vUnCom = produtoNFe.vUnCom.ToString();
+                            }
+
+                            if (reader.Name == "NCM")
+                            {
+                                produtoNFe.NCM = reader.ReadElementContentAsString();
+                            }
+
+                            if (reader.Name == "CEST")
+                            {
+                                produtoNFe.CEST = reader.ReadElementContentAsString();
+                            }
+
+                            if (reader.NodeType == XmlNodeType.Element && reader.Name == "ICMS")
+                            {
+
+                                if (reader.ReadToDescendant("CST"))
                                 {
-                                    produtoNFe.uCom = reader.ReadElementContentAsString();
+                                    produtoNFe.cstICMS = reader.ReadElementContentAsString();
                                 }
 
-                                if (reader.Name == "qCom")
+                                if (reader.Name == "modBC")
                                 {
-                                    produtoNFe.qCom = reader.ReadElementContentAsDecimal();
-                                    produtoDataGrid.qCom = produtoNFe.qCom.ToString();
+                                    produtoNFe.modBC = reader.ReadElementContentAsInt();
                                 }
 
-                                if (reader.Name == "vUnCom")
+                                if (reader.Name == "vBC")
                                 {
-                                    produtoNFe.vUnCom = reader.ReadElementContentAsDecimal();
-                                    produtoDataGrid.vUnCom = produtoNFe.vUnCom.ToString();
+                                    produtoNFe.vBC_ICMS = reader.ReadElementContentAsDecimal();
                                 }
 
-                                if (reader.Name == "NCM")
+                                if (reader.Name == "pICMS")
                                 {
-                                    produtoNFe.NCM = reader.ReadElementContentAsString();
+                                    produtoNFe.pICMS = reader.ReadElementContentAsDecimal();
                                 }
 
-                                if (reader.Name == "CEST")
+                                if (reader.Name == "vICMS")
                                 {
-                                    produtoNFe.CEST = reader.ReadElementContentAsString();
+                                    produtoNFe.vICMS = reader.ReadElementContentAsDecimal();
                                 }
 
-                                if (reader.NodeType == XmlNodeType.Element && reader.Name == "ICMS")
+                                produtoNFe.PadroesFiscaisProdutoOrigem.Add
+                                    (
+                                    Impostos.TipoDeImposto.ICMS,
+                                    new PadraoFiscalProdutoOrigem
+                                    {
+                                        Imposto = Impostos.TipoDeImposto.ICMS,
+                                        CodigoRegimeTributarioOrigem = emitenteNFe.CRT,
+                                        CodigoRegimeTributarioDestino = destinatarioNFe.CRT,
+                                        CstImposto = produtoNFe.cstICMS
+                                    });
+                            }
+
+                            if (reader.NodeType == XmlNodeType.Element && reader.Name == "IPI")
+                            {
+                                if (reader.ReadToDescendant("cEnq"))
+                                {
+                                    produtoNFe.cEnq = reader.ReadElementContentAsInt();
+                                }
+
+                                if (reader.NodeType == XmlNodeType.Element && reader.Name == "IPITrib" || reader.NodeType == XmlNodeType.Element && reader.Name == "IPINT")
                                 {
                                     if (reader.ReadToDescendant("CST"))
                                     {
-                                        produtoNFe.cstICMS = reader.ReadElementContentAsString();
-                                    }
-
-                                    if (reader.Name == "modBC")
-                                    {
-                                        produtoNFe.modBC = reader.ReadElementContentAsInt();
+                                        produtoNFe.cstIPI = reader.ReadElementContentAsString();
                                     }
 
                                     if (reader.Name == "vBC")
                                     {
-                                        produtoNFe.vBC_ICMS = reader.ReadElementContentAsDecimal();
+                                        produtoNFe.vBC_IPI = reader.ReadElementContentAsDecimal();
                                     }
 
-                                    if (reader.Name == "pICMS")
+                                    if (reader.Name == "pIPI")
                                     {
-                                        produtoNFe.pICMS = reader.ReadElementContentAsDecimal();
+                                        produtoNFe.pIPI = reader.ReadElementContentAsDecimal();
                                     }
 
-                                    if (reader.Name == "vICMS")
+                                    if (reader.Name == "vIPI")
                                     {
-                                        produtoNFe.vICMS = reader.ReadElementContentAsDecimal();
+                                        produtoNFe.vIPI = reader.ReadElementContentAsDecimal();
                                     }
+
+                                    produtoNFe.PadroesFiscaisProdutoOrigem.Add
+                                        (
+                                            Impostos.TipoDeImposto.IPI,
+                                            new PadraoFiscalProdutoOrigem()
+                                            {
+                                                CstImposto = produtoNFe.cstIPI,
+                                                CodigoRegimeTributarioOrigem = emitenteNFe.CRT,
+                                                CodigoRegimeTributarioDestino = destinatarioNFe.CRT,
+                                                Imposto = Impostos.TipoDeImposto.IPI
+                                            }
+                                        );
                                 }
+                            }
 
-                                if (reader.NodeType == XmlNodeType.Element && reader.Name == "IPI")
+                            if (reader.NodeType == XmlNodeType.Element && reader.Name == "PIS")
+                            {
+                                if (reader.ReadToDescendant("CST"))
                                 {
-                                    if (reader.ReadToDescendant("cEnq"))
-                                    {
-                                        produtoNFe.cEnq = reader.ReadElementContentAsInt();
-                                    }
-
-                                    if (reader.NodeType == XmlNodeType.Element && reader.Name == "IPITrib" || reader.NodeType == XmlNodeType.Element && reader.Name == "IPINT")
-                                    {
-                                        if (reader.ReadToDescendant("CST"))
-                                        {
-                                            produtoNFe.cstIPI = reader.ReadElementContentAsString();
-                                        }
-
-                                        if (reader.Name == "vBC")
-                                        {
-                                            produtoNFe.vBC_IPI = reader.ReadElementContentAsDecimal();
-                                        }
-
-                                        if (reader.Name == "pIPI")
-                                        {
-                                            produtoNFe.pIPI = reader.ReadElementContentAsDecimal();
-                                        }
-
-                                        if (reader.Name == "vIPI")
-                                        {
-                                            produtoNFe.vIPI = reader.ReadElementContentAsDecimal();
-                                        }
-                                    }
+                                    produtoNFe.cstPIS = reader.ReadElementContentAsString();
                                 }
 
-                                if (reader.NodeType == XmlNodeType.Element && reader.Name == "PIS")
+                                if (reader.Name == "vBC")
                                 {
-                                    if (reader.ReadToDescendant("CST"))
-                                    {
-                                        produtoNFe.cstPIS = reader.ReadElementContentAsInt();
-                                    }
-
-                                    if (reader.Name == "vBC")
-                                    {
-                                        produtoNFe.vBC_PIS = reader.ReadElementContentAsDecimal();
-                                    }
-
-                                    if (reader.Name == "pPIS")
-                                    {
-                                        produtoNFe.pPIS = reader.ReadElementContentAsDecimal();
-                                    }
-
-                                    if (reader.Name == "vPIS")
-                                    {
-                                        produtoNFe.vPIS = reader.ReadElementContentAsDecimal();
-                                    }
+                                    produtoNFe.vBC_PIS = reader.ReadElementContentAsDecimal();
                                 }
 
-                                if (reader.NodeType == XmlNodeType.Element && reader.Name == "COFINS")
+                                if (reader.Name == "pPIS")
                                 {
-
-                                    if (reader.ReadToDescendant("CST"))
-                                    {
-                                        produtoNFe.cstCOFINS = reader.ReadElementContentAsInt();
-                                    }
-
-                                    if (reader.Name == "vBC")
-                                    {
-                                        produtoNFe.vBC_COFINS = reader.ReadElementContentAsDecimal();
-                                    }
-
-                                    if (reader.Name == "pCOFINS")
-                                    {
-                                        produtoNFe.pCOFINS = reader.ReadElementContentAsDecimal();
-                                    }
-
-                                    if (reader.Name == "vCOFINS")
-                                    {
-                                        produtoNFe.vCOFINS = reader.ReadElementContentAsDecimal();
-                                    }
+                                    produtoNFe.pPIS = reader.ReadElementContentAsDecimal();
                                 }
 
-                                if (reader.Name == "vProd")
+                                if (reader.Name == "vPIS")
                                 {
-                                    produtoNFe.vProd = reader.ReadElementContentAsString();
-                                    produtoDataGrid.vProd = produtoNFe.vProd;
-                                    #region Codigo Legado DataRow
-                                    //DataRow dataRow = tableProdutos.NewRow();
-                                    //dataRow.SetField("cProd", produto.cProd);
-                                    //dataRow.SetField("cEAN", produto.cEAN);
-                                    //dataRow.SetField("xProd", produto.xProd);
-                                    //dataRow.SetField("qCom", produto.qCom);
-                                    //dataRow.SetField("vUnCom", produto.vUnCom);
-                                    //dataRow.SetField("vProd", produto.vProd);
-
-
-                                    //Icon _ok = new Icon("ok.ico");
-                                    //Icon _not = new Icon("not.ico");
-                                    //.SetField("Existe?", intExiste > 0 ? _ok : _not);
-                                    // ? true : false;
-
-                                    //Icon _shared = new Icon("shared.ico");
-                                    //Icon _unshared = new Icon("unshared.ico");
-                                    #endregion
-
-                                    produtoNFe.ChaveDeCriacao = dadosNFe.IdNFe;
-                                   
-                                    
-                                    produtoNFe.isExiste = chaveItemPreExistente > 0 ? true : false;
-                                    produtoDataGrid.IsExiste = produtoNFe.isExiste;
-
-                                    produtoNFe.AcaoProdNFe = chaveItemPreExistente > 0 ? TiposAcaoProdNFe.TiposAcoesNFe.Nenhum : TiposAcaoProdNFe.TiposAcoesNFe.Cadastrar;
-                                    produtoDataGrid.acaoProdNFe = produtoNFe.AcaoProdNFe;
-
-                                    produtoNFe.emitenteNFe = emitenteNFe;
-                                    produtoNFe.Loja = Program.Loja.Codigo;
-
-                                    CarregaTabelaDePrecosProdutoNFe(produtoNFe, chaveItemPreExistente);
-                                    produtoNFe.isAlteraPreco = false;
-
-                                    produtosNFE.Add(produtoNFe);
-                                    produtosParaDataGridColumns.Add(produtoDataGrid);
+                                    produtoNFe.vPIS = reader.ReadElementContentAsDecimal();
                                 }
+
+                                produtoNFe.PadroesFiscaisProdutoOrigem.Add
+                                    (
+                                        Impostos.TipoDeImposto.PIS,
+                                        new PadraoFiscalProdutoOrigem
+                                        {
+                                            Imposto = Impostos.TipoDeImposto.PIS,
+                                            CodigoRegimeTributarioOrigem = emitenteNFe.CRT,
+                                            CodigoRegimeTributarioDestino = destinatarioNFe.CRT,
+                                            CstImposto = produtoNFe.cstPIS
+                                        }
+                                    );
+                            }
+
+                            if (reader.NodeType == XmlNodeType.Element && reader.Name == "COFINS")
+                            {
+                                if (reader.ReadToDescendant("CST"))
+                                {
+                                    produtoNFe.cstCOFINS = reader.ReadElementContentAsString();
+                                }
+
+                                if (reader.Name == "vBC")
+                                {
+                                    produtoNFe.vBC_COFINS = reader.ReadElementContentAsDecimal();
+                                }
+
+                                if (reader.Name == "pCOFINS")
+                                {
+                                    produtoNFe.pCOFINS = reader.ReadElementContentAsDecimal();
+                                }
+
+                                if (reader.Name == "vCOFINS")
+                                {
+                                    produtoNFe.vCOFINS = reader.ReadElementContentAsDecimal();
+                                }
+
+                                produtoNFe.PadroesFiscaisProdutoOrigem.Add
+                                    (
+                                        Impostos.TipoDeImposto.COFINS,
+                                        new PadraoFiscalProdutoOrigem
+                                        {
+                                            Imposto = Impostos.TipoDeImposto.COFINS,
+                                            CodigoRegimeTributarioOrigem = emitenteNFe.CRT,
+                                            CodigoRegimeTributarioDestino = destinatarioNFe.CRT,
+                                            CstImposto = produtoNFe.cstCOFINS
+                                        }
+                                    );
+                            }
+
+                            if (reader.Name == "vProd")
+                            {
+                                produtoNFe.vProd = reader.ReadElementContentAsString();
+                                produtoDataGrid.vProd = produtoNFe.vProd;
+                                #region Codigo Legado DataRow
+                                //DataRow dataRow = tableProdutos.NewRow();
+                                //dataRow.SetField("cProd", produto.cProd);
+                                //dataRow.SetField("cEAN", produto.cEAN);
+                                //dataRow.SetField("xProd", produto.xProd);
+                                //dataRow.SetField("qCom", produto.qCom);
+                                //dataRow.SetField("vUnCom", produto.vUnCom);
+                                //dataRow.SetField("vProd", produto.vProd);
+
+
+                                //Icon _ok = new Icon("ok.ico");
+                                //Icon _not = new Icon("not.ico");
+                                //.SetField("Existe?", intExiste > 0 ? _ok : _not);
+                                // ? true : false;
+
+                                //Icon _shared = new Icon("shared.ico");
+                                //Icon _unshared = new Icon("unshared.ico");
+                                #endregion
+
+                                produtoNFe.ChaveDeCriacao = dadosNFe.IdNFe;
+
+
+                                produtoNFe.isExiste = chaveItemPreExistente > 0 ? true : false;
+                                produtoDataGrid.IsExiste = produtoNFe.isExiste;
+
+                                produtoNFe.AcaoProdNFe = chaveItemPreExistente > 0 ? TiposAcaoProdNFe.TiposAcoesNFe.Nenhum : TiposAcaoProdNFe.TiposAcoesNFe.Cadastrar;
+                                produtoDataGrid.acaoProdNFe = produtoNFe.AcaoProdNFe;
+
+                                produtoNFe.emitenteNFe = emitenteNFe;
+                                produtoNFe.Loja = Program.Loja.Codigo;
+
+                                CarregaTabelaDePrecosProdutoNFe(ref produtoNFe, chaveItemPreExistente);
+                                produtoNFe.isAlteraPreco = false;
+
+                                produtosNFE.Add(produtoNFe);
+                                produtosParaDataGridColumns.Add(produtoDataGrid);
                             }
                         }
                     }
-                    //statusNota.status = StatusNota.Status.ARECEBER;
-                    BindAcoes(produtosParaDataGridColumns);
-                    FormataDataGridView();
+                }
+                //statusNota.status = StatusNota.Status.ARECEBER;
+                BindAcoes(produtosParaDataGridColumns);
+                FormataDataGridView();
 
-                    DesabilitaRowParaProdutoRepetido(dgvProdutos);
-                        //for (int i = 0; i < dgvProdutos.Rows.Count; i++)
-                    //{
-                    //    MessageBox.Show(((DataGridViewRow)dgvProdutos.Rows[i]).Cells[2].Value.ToString());
-                    //}
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Não foi possível ler os produtos da Nota Fiscal \n" + ex.Message, "Exceção Expansiva", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                DesabilitaRowParaProdutoRepetido(dgvProdutos);
+                //for (int i = 0; i < dgvProdutos.Rows.Count; i++)
+                //{
+                //    MessageBox.Show(((DataGridViewRow)dgvProdutos.Rows[i]).Cells[2].Value.ToString());
+                //}
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"Não foi possível ler os produtos da Nota Fiscal.\n{ex.Message}\n{ex.StackTrace}");
             }
         }
 
@@ -697,7 +777,7 @@ namespace ImportadorXmlNFe
                     {
                         resultado += caminho + ";";
                     }
-                } 
+                }
             }
 
             return resultado;
@@ -722,7 +802,7 @@ namespace ImportadorXmlNFe
                             dr.Read();
                             retorno = Convert.IsDBNull(dr.GetInt32(0)) ? retorno : dr.GetInt32(0);
                         }
-                        
+
                         return retorno;
                     }
                 }
@@ -732,19 +812,19 @@ namespace ImportadorXmlNFe
                 System.Diagnostics.Debug.WriteLine("Erro na chamada do método ExisteProdutoNFe, da classe frmLerXMLNFe \n" + ex.Message + "\n" + ex.StackTrace);
                 throw ex;
             }
-            
+
         }
 
         private void btnLerXML_Click(object sender, EventArgs e)
         {
-            MessageBox.Show(((ProdutoNFeDataGridColumns)bndSourceProdutosDataGrid.Current).acaoProdNFe.ToString()); 
+            MessageBox.Show(((ProdutoNFeDataGridColumns)bndSourceProdutosDataGrid.Current).acaoProdNFe.ToString());
         }
-        private void btnImportarXML_Click(object sender, EventArgs e) 
+        private void btnImportarXML_Click(object sender, EventArgs e)
         {
             if (statusNota.status == StatusNota.Status.RECEBIDA)
             {
                 MessageBox.Show("A Nota Fiscal de Nº " + dadosNFe.cNF + " já foi recebida em " + notaConsultada.Data.ToShortDateString(), "Recebimento de NFe", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                
+
                 return;
             }
 
@@ -752,7 +832,11 @@ namespace ImportadorXmlNFe
         }
         private void importarNFE()
         {
-           ConnectionSingleton.BeginTransaction(); //pesquisar como alterar o modo de lock da transaction (serializar)
+            if (dadosNFe == null)
+            {
+                return;
+            }
+            ConnectionSingleton.BeginTransaction(); //pesquisar como alterar o modo de lock da transaction (serializar)
             try
             {
                 importarNFE_Action();
@@ -813,14 +897,35 @@ namespace ImportadorXmlNFe
                     _produtoNFe.ItensGradeProdutos[0].ChaveUnica = chaveItem;
                     _produtoNFe.isExiste = chaveItem > 0 ? true : false; //LINHA NOVA
 
+                    AliquotaICMSPersistence iCMSPersistence = new AliquotaICMSPersistence();
+                    AliquotaICMS icms = iCMSPersistence.RetornaICMSPadrao();
+                    cadProd.CodAliquota = icms.Codigo;
+                    cadProd.PercentualDeICMS = (float)icms.ICMS;
+
                     cadProd.DataCadastro = DateTime.Today;
                     cadProd.Codigo = produtoRepository.RetornaCodigoProdutoPelaChaveUnicaDoItemGrade(chaveItem);
                     cadProd.Ativado = true;
-                    
-                    cadProd.ItensGrade[0].Precos = _produtoNFe.ItensGradeProdutos[0].Precos;
+                    cadProd.Feito = 1;
+                    cadProd.ItensGrade[0].Precos = new List<ItemTabelaPreco>();
+
+                    foreach (var itemPreco in _produtoNFe.ItensGradeProdutos[0].Precos)
+                    {
+                        cadProd.ItensGrade[0].Precos.Add(
+                            new ItemTabelaPreco()
+                            {
+                                ChaveUnica = itemPreco.ChaveUnica,
+                                ChaveUnicaTabela = itemPreco.ChaveUnicaTabela,
+                                CodigoProduto = itemPreco.CodigoProduto,
+                                CodigoTabela = itemPreco.CodigoTabela,
+                                NomeTabela = itemPreco.NomeTabela,
+                                PrecoVenda = itemPreco.PrecoVenda
+                            }
+                            );
+                    }
+
                     cadProd.ItensGrade[0].EstoqueNasFiliais = new List<EstoqueFilial>();
-                   
-                    if ((!_produtoNFe.isExiste) & (!_produtoNFe.isDuplicado) )
+
+                    if ((!_produtoNFe.isExiste) & (!_produtoNFe.isDuplicado))
                     {
 
                         chaveItem = produtoRepository.CadastraProdutoRetornaChaveItemGrade(cadProd);
@@ -864,16 +969,16 @@ namespace ImportadorXmlNFe
                         }
 
                     }
-                    
+
                     else if ((!_produtoNFe.isExiste) & (_produtoNFe.isDuplicado)) // NAO ATUALIZA CADASTRO, APENAS MOVIMENTA ESTOQUE
                     {
                         float estoqueAnterior = 0;
                         ProdutoNFe prod = produtosNFE.Find(p => p.Equals(_produtoNFe));
                         int indiceDoElementoAtual = produtosNFE.IndexOf(prod);
 
-                        for (int i = 0; i <  indiceDoElementoAtual ; i++)
+                        for (int i = 0; i < indiceDoElementoAtual; i++)
                         {
-                            
+
                             if (produtosNFE[i].cProd == _produtoNFe.cProd)
                             {
                                 chaveItem = produtosNFE[i].ItensGradeProdutos[0].ChaveUnica;
@@ -916,10 +1021,10 @@ namespace ImportadorXmlNFe
                         foreach (EstoqueFilial estoque in cadProd.ItensGrade[0].EstoqueNasFiliais)
                         {
                             estoqueFilialRepository.AtualizaEstoqueDoItem(estoque);
-                        } 
+                        }
                     }
-                    
-                    else if ( (_produtoNFe.isExiste) & (!_produtoNFe.isDuplicado) ) 
+
+                    else if ((_produtoNFe.isExiste) & (!_produtoNFe.isDuplicado))
                     {
                         #region Nota
                         /*
@@ -933,7 +1038,7 @@ namespace ImportadorXmlNFe
                         produtoRepository.UpdatePelaNFe(cadProd);
                     }
 
-                    else if ((_produtoNFe.isExiste) & (_produtoNFe.isDuplicado)) 
+                    else if ((_produtoNFe.isExiste) & (_produtoNFe.isDuplicado))
                     {
                         //ATUALIZA(RIA) CADASTRO E MOVIMENTA ESTOQUE
                         MovimentaEstoqueProdutosExistentes(TiposMovEstoque.Tipo.EntradaPorCompra, ref cadProd, chaveItem, estoqueFilialRepository, dadosMoviEstoque, _produtoNFe);
@@ -971,99 +1076,113 @@ namespace ImportadorXmlNFe
 
         private void MovimentaEstoqueProdutosExistentes(TiposMovEstoque.Tipo tipoMov, ref CadProduto cadProd, int chaveItem, EstoqueFilialRepository estoqueFilialRepository, DadosMoviEstoque dadosMoviEstoqueAtual, ProdutoNFe _produtoNFe)
         {
-            cadProd.Chaveunica = produtoRepository.RetornaChaveUnicaProdutoPelaChaveDoItemGrade(chaveItem);
-
-            foreach (var item in cadProd.ItensGrade)
+            try
             {
-                item.ChaveUnica = chaveItem;
-                item.EstoqueNasFiliais = new List<EstoqueFilial>();
-                item.EstoqueNasFiliais.Add
-                    (
-                        new EstoqueFilial()
-                        {
-                            CodigoProduto = chaveItem,
-                            CodigoFilial  = (int)cb_LocaisDeEstoque.SelectedValue,
-                            CodigoLoja    = loja.Codigo
-                            //Estoque     = item.EstoqueInicial
-                                    }
-                    );
-                decimal estoqueAnterior = estoqueFilialRepository.ConsultaEstoqueDoItem(item.EstoqueNasFiliais[0]);
+                cadProd.Chaveunica = produtoRepository.RetornaChaveUnicaProdutoPelaChaveDoItemGrade(chaveItem);
 
-                string _nomeMov = string.Empty;
-                string _tipoMov = string.Empty;
-                decimal _estoqueAtual = default(decimal);
-                int _codMov = (int)tipoMov;
-                switch (tipoMov)
+                foreach (var item in cadProd.ItensGrade)
                 {
-                    case TiposMovEstoque.Tipo.ZeroBase:
-                        break;
-
-                    case TiposMovEstoque.Tipo.EntradaPorCompra:
-                        _nomeMov = "Entrada por Compra";
-                        _tipoMov = "E";
-                        _estoqueAtual = estoqueAnterior + cadProd.ItensGrade[0].EstoqueInicial;
-                        break;
-
-                    case TiposMovEstoque.Tipo.SaidaPorVenda:
-                        _nomeMov = "Saída por Venda";
-                        _tipoMov = "S";
-                        _estoqueAtual = estoqueAnterior - cadProd.ItensGrade[0].EstoqueInicial;
-                        break;
-
-                    case TiposMovEstoque.Tipo.AjusteDeEntrada:
-                        _nomeMov = "Ajuste de Entrada";
-                        _tipoMov = "E";
-                        _estoqueAtual = estoqueAnterior + cadProd.ItensGrade[0].EstoqueInicial;
-                        break;
-
-                    case TiposMovEstoque.Tipo.AjusteDeSaida:
-                        _nomeMov = "Ajuste de Saída";
-                        _tipoMov = "S";
-                        _estoqueAtual = estoqueAnterior - cadProd.ItensGrade[0].EstoqueInicial;
-                        break;
-
-                    default:
-                        break;
-                }
-
-                ItemMovEstoque itemMovEstoque = new ItemMovEstoque()
-                {
-                    Codigo = dadosMoviEstoqueAtual.Codigo,
-                    CodProd = item.ChaveUnica,
-                    CodMov = _codMov.ToString(),
-                    NomeMov = _nomeMov,
-                    TipoMov = _tipoMov,
-                    CodCor = string.Empty,
-                    CodTam = string.Empty,
-                    Data = dadosMoviEstoqueAtual.Data,
-                    Quantidade = cadProd.ItensGrade[0].EstoqueInicial,
-                    Preco = cadProd.ItensGrade[0].PrecoCompra,
-                    Total = Decimal.Parse(_produtoNFe.vProd),
-                    Ref = string.IsNullOrEmpty(cadProd.ItensGrade[0].Referencia) ? string.Empty : cadProd.ItensGrade[0].Referencia,
-                    Loja = loja.Codigo,
-                    EstoqueAnterior = (float)estoqueAnterior,
-                    EstoqueAtual = (float)_estoqueAtual
-                };
-
-                dadosMoviEstoqueRepository.InserirItemMovEstoque(itemMovEstoque);
-
-                foreach (var filial in Program.Loja.Filiais)
-                {
-                    item.EstoqueNasFiliais.Add(
-                       new EstoqueFilial
-                       {
-                           CodigoLoja = filial.CodigoLoja,
-                           CodigoFilial = filial.CodigoFilial,
-                           CodigoProduto = item.ChaveUnica,
-                           Estoque = filial.CodigoFilial == (int)cb_LocaisDeEstoque.SelectedValue ? (decimal)itemMovEstoque.EstoqueAtual : 0
-                       }
+                    item.ChaveUnica = chaveItem;
+                    item.EstoqueNasFiliais = new List<EstoqueFilial>();
+                    item.EstoqueNasFiliais.Add
+                        (
+                            new EstoqueFilial()
+                            {
+                                CodigoProduto = chaveItem,
+                                CodigoFilial = (int)cb_LocaisDeEstoque.SelectedValue,
+                                CodigoLoja = loja.Codigo
+                                //Estoque     = item.EstoqueInicial
+                            }
                         );
-                }
-                foreach (EstoqueFilial estoque in cadProd.ItensGrade[0].EstoqueNasFiliais)
-                {
-                    estoqueFilialRepository.AtualizaEstoqueDoItem(estoque);
+                    decimal estoqueAnterior = estoqueFilialRepository.ConsultaEstoqueDoItem(item.EstoqueNasFiliais[0]);
+
+                    string _nomeMov = string.Empty;
+                    string _tipoMov = string.Empty;
+                    decimal _estoqueAtual = default(decimal);
+                    int _codMov = (int)tipoMov;
+                    switch (tipoMov)
+                    {
+                        case TiposMovEstoque.Tipo.ZeroBase:
+                            break;
+
+                        case TiposMovEstoque.Tipo.EntradaPorCompra:
+                            _nomeMov = "Entrada por Compra";
+                            _tipoMov = "E";
+                            _estoqueAtual = estoqueAnterior + cadProd.ItensGrade[0].EstoqueInicial;
+                            break;
+
+                        case TiposMovEstoque.Tipo.SaidaPorVenda:
+                            _nomeMov = "Saída por Venda";
+                            _tipoMov = "S";
+                            _estoqueAtual = estoqueAnterior - cadProd.ItensGrade[0].EstoqueInicial;
+                            break;
+
+                        case TiposMovEstoque.Tipo.AjusteDeEntrada:
+                            _nomeMov = "Ajuste de Entrada";
+                            _tipoMov = "E";
+                            _estoqueAtual = estoqueAnterior + cadProd.ItensGrade[0].EstoqueInicial;
+                            break;
+
+                        case TiposMovEstoque.Tipo.AjusteDeSaida:
+                            _nomeMov = "Ajuste de Saída";
+                            _tipoMov = "S";
+                            _estoqueAtual = estoqueAnterior - cadProd.ItensGrade[0].EstoqueInicial;
+                            break;
+
+                        default:
+                            break;
+                    }
+
+                    ItemMovEstoque itemMovEstoque = new ItemMovEstoque()
+                    {
+                        Codigo = dadosMoviEstoqueAtual.Codigo,
+                        CodProd = item.ChaveUnica,
+                        CodMov = _codMov.ToString(),
+                        NomeMov = _nomeMov,
+                        TipoMov = _tipoMov,
+                        CodCor = string.Empty,
+                        CodTam = string.Empty,
+                        Data = dadosMoviEstoqueAtual.Data,
+                        Quantidade = cadProd.ItensGrade[0].EstoqueInicial,
+                        Preco = cadProd.ItensGrade[0].PrecoCompra,
+                        Total = Decimal.Parse(_produtoNFe.vProd),
+                        Ref = string.IsNullOrEmpty(cadProd.ItensGrade[0].Referencia) ? string.Empty : cadProd.ItensGrade[0].Referencia,
+                        Loja = loja.Codigo,
+                        EstoqueAnterior = (float)estoqueAnterior,
+                        EstoqueAtual = (float)_estoqueAtual
+                    };
+
+                    dadosMoviEstoqueRepository.InserirItemMovEstoque(itemMovEstoque);
+
+                    foreach (var filial in Program.Loja.Filiais)
+                    {
+                        item.EstoqueNasFiliais.Add(
+                           new EstoqueFilial
+                           {
+                               CodigoLoja = filial.CodigoLoja,
+                               CodigoFilial = filial.CodigoFilial,
+                               CodigoProduto = item.ChaveUnica,
+                               Estoque = filial.CodigoFilial == (int)cb_LocaisDeEstoque.SelectedValue ? (decimal)itemMovEstoque.EstoqueAtual : 0
+                           }
+                            );
+                    }
+                    foreach (EstoqueFilial estoque in cadProd.ItensGrade[0].EstoqueNasFiliais)
+                    {
+                        estoqueFilialRepository.AtualizaEstoqueDoItem(estoque);
+                    }
+
+                    if (!produtoNFe.isAlteraPreco)
+                    {
+                        cadProd.ItensGrade[0].Precos.Clear();
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                Log.Error(ex, $"Não foi possível movimentar o estoque dos produtos existentes. Método: MovimentaEstoqueProdutosExistentes(...).\n{ex.Message}\n{ex.StackTrace}");
+                throw ex;
+            }
+
         }
 
         private void BindAcoes(ObservableCollection<ProdutoNFeDataGridColumns> lista)
@@ -1142,6 +1261,7 @@ namespace ImportadorXmlNFe
             }
             catch (Exception ex)
             {
+                Log.Error(ex, $"Erro ao popular o combo Locais de Estoque. Método: CarregaComboLocaisDeEstoque\n{ex.Message}.\n{ex.StackTrace}");
                 throw ex;
             }
         }
@@ -1158,23 +1278,28 @@ namespace ImportadorXmlNFe
                 ic.Image = Image.FromFile(@"not.png");
             }
         }
-        private void CarregaTabelaDePrecosProdutoNFe(ProdutoNFe prod, int chaveUnicaItem)
+        private void CarregaTabelaDePrecosProdutoNFe(ref ProdutoNFe prodNFe, int chaveUnicaItem)
         {
-            if (prod.ItensGradeProdutos == null)
+            if (prodNFe.ItensGradeProdutos == null)
             {
-                prod.ItensGradeProdutos = new List<ItemGradeProduto>();
-                prod.ItensGradeProdutos.Add
+                prodNFe.ItensGradeProdutos = new List<ItemGradeProduto>();
+                prodNFe.ItensGradeProdutos.Add
                     (new ItemGradeProduto
                     {
                         ChaveUnica = chaveUnicaItem,
                         Loja = Program.Loja.Codigo,
-                        CodBarraForn = prod.CodBarraForn,
-                        EstoqueInicial = prod.qCom,
-                        ChaveDeCriacao = prod.ChaveDeCriacao
+                        CodBarraForn = prodNFe.CodBarraForn,
+                        EstoqueInicial = prodNFe.qCom,
+                        ChaveDeCriacao = prodNFe.ChaveDeCriacao
                     });
+
+                long codProd = produtoRepository.RetornaCodigoProdutoPelaChaveUnicaDoItemGrade(chaveUnicaItem);
+                CadProduto produtoVinculado = produtoRepository.RetornaProduto<long>(TiposParametrosConsultaProdutos.Parametro.Codigo, codProd);
+
+                prodNFe.ProdutoVinculado = produtoVinculado;
             }
 
-            foreach (var item in prod.ItensGradeProdutos)
+            foreach (var item in prodNFe.ItensGradeProdutos)
             {
                 if (item.Precos == null)
                 {
@@ -1200,12 +1325,12 @@ namespace ImportadorXmlNFe
 
         private void dgvProdutos_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            
+
             if (e.ColumnIndex == 0)
             {
                 if (((DataGridView)sender).Rows[e.RowIndex].ReadOnly)
                 {
-                    MessageBox.Show("Não é possível editar");
+                    MessageBox.Show("Não é possível editar um item duplicado", "Edição de item da Nota Fiscal", MessageBoxButtons.OK, MessageBoxIcon.Hand);
                 }
                 else
                 {
@@ -1214,6 +1339,43 @@ namespace ImportadorXmlNFe
                     formProdNFe.produtoNfe = produtosNFE.Find(p => p.cProd == ((ProdutoNFeDataGridColumns)bndSourceProdutosDataGrid.Current).cProd);
 
                     formProdNFe.ShowDialog();
+
+                    //(Desvincula) Atualiza isExiste de produtoNFe desvinculado e atualiza DataGridView
+                    foreach (var _produtoNFe in produtosNFE)
+                    {
+                        if (!(_produtoNFe.ProdutoVinculado is null) & !(formProdNFe.produtoNfe.ProdutoVinculado is null))
+                        {
+                            if (formProdNFe.produtoNfe.ProdutoVinculado.Codigo == _produtoNFe.ProdutoVinculado.Codigo & (!formProdNFe.produtoNfe.Equals(_produtoNFe)))
+                            {
+                                _produtoNFe.isExiste = false;
+                                produtosParaDataGridColumns[produtosNFE.IndexOf(_produtoNFe)].IsExiste = false;
+                            }
+                        }
+
+                    }
+
+                    //Atualiza isExiste no DataGridView para produto recém vinculado
+                    foreach (var produtoDataGrid in produtosParaDataGridColumns)
+                    {
+                        if (produtoDataGrid.cProd == formProdNFe.produtoNfe.cProd)
+                        {
+                            produtoDataGrid.IsExiste = formProdNFe.produtoNfe.isExiste;
+                        }
+                    }
+
+                    ((ProdutoNFeDataGridColumns)bndSourceProdutosDataGrid.Current).IsExiste = formProdNFe.produtoNfe.isExiste;
+
+                    //(Vincula) Atualiza isExiste de ProdutoNFe recém vinculado
+                    foreach (var produtoNFe in produtosNFE)
+                    {
+                        if (produtoNFe.cProd == ((ProdutoNFeDataGridColumns)bndSourceProdutosDataGrid.Current).cProd)
+                        {
+                            produtoNFe.isExiste = formProdNFe.produtoNfe.isExiste;
+                        }
+
+                    }
+
+                    dgvProdutos.Refresh();
                 }
             }
         }
@@ -1227,20 +1389,20 @@ namespace ImportadorXmlNFe
                 lblMensagemStatus.Text = "AGUARDANDO RECEBIMENTO";
             }
 
-            if(statusNota.status == StatusNota.Status.RECEBIDA)
+            if (statusNota.status == StatusNota.Status.RECEBIDA)
             {
                 panelStatus.BackColor = Color.Yellow;
                 lblMensagemStatus.ForeColor = Color.Black;
                 lblMensagemStatus.Text = "NOTA RECEBIDA";
             }
-            
+
             if (statusNota.status == StatusNota.Status.RECEBENDO)
             {
                 panelStatus.BackColor = Color.GreenYellow;
                 lblMensagemStatus.ForeColor = Color.Black;
                 lblMensagemStatus.Text = "NOTA EM RECEBIMENTO...";
             }
-            
+
             if (statusNota.status == StatusNota.Status.ALER)
             {
                 panelStatus.BackColor = Color.Orange;
@@ -1265,7 +1427,7 @@ namespace ImportadorXmlNFe
                     return;
                 }
 
-                if (MessageBox.Show("Confirma o ESTORNO da NFe de nº: " + dadosNFe.cNF, "Estorno de Recebimento de NFe", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if (MessageBox.Show("Confirma o cancelamento da importação da NFe de nº?: " + dadosNFe.cNF, "Estorno de Recebimento de NFe", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     try
                     {
@@ -1301,7 +1463,7 @@ namespace ImportadorXmlNFe
                                 CadProduto cadProd = new CadProduto();
                                 cadProd.Codigo = produtoRepository.RetornaCodigoProdutoPelaChaveUnicaDoItemGrade(_produtoNFe.ItensGradeProdutos[0].ChaveUnica);
                                 bool excluirDaCadProduto = true;
-                                if (produtoRepository.RetornaProduto(cadProd.Codigo).ChaveDeCriacao == dadosNFe.IdNFe)
+                                if (produtoRepository.RetornaProduto<long>(TiposParametrosConsultaProdutos.Parametro.Codigo, cadProd.Codigo).ChaveDeCriacao == dadosNFe.IdNFe)
                                 {
                                     foreach (var item in _produtoNFe.ItensGradeProdutos)
                                     {
@@ -1360,7 +1522,7 @@ namespace ImportadorXmlNFe
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine("Erro!:\nOcorreu um erro ao ESTORNAR a NFe.\n" + ex.Message + "\n" + ex.StackTrace);
+                        Log.Error(ex, $"Não foi possível cancelar a NFe.\n{ex.Message}\n{ex.StackTrace}");
 
                         try
                         {
@@ -1370,7 +1532,7 @@ namespace ImportadorXmlNFe
                         {
                             throw exRollback;
                         }
-                    }   
+                    }
                 }
             }
         }
@@ -1379,7 +1541,7 @@ namespace ImportadorXmlNFe
     /// <summary>
     /// Classe criada para carregar as colunas do DataGridView
     /// </summary>
-    public class ProdutoNFeDataGridColumns : INotifyPropertyChanged , IEquatable<ProdutoNFeDataGridColumns>
+    public class ProdutoNFeDataGridColumns : INotifyPropertyChanged, IEquatable<ProdutoNFeDataGridColumns>
     {
         private bool isExiste;
         public string cProd { get; set; }

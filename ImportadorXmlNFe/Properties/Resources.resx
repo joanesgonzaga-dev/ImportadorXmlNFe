@@ -133,13 +133,16 @@
   <data name="replay_48px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Img\replay_48px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="bind_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Img\bind_32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="mini_miximize_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Img\mini_miximize_16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="edit_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Img\edit_16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="bind_32" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Img\bind_32.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="bind_16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\bin\Debug\bind_16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

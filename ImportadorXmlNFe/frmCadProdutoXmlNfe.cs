@@ -1,6 +1,7 @@
 ﻿using DinnamuS_Desktop_2._0.Data;
 using DinnamuS_Desktop_2._0.Data.Persistence;
 using DinnamuS_Desktop_2._0.Model;
+using DinnamuS_Desktop_2._0.Model.Fiscal;
 using DinnamuS_Desktop_2._0.Model.Produto;
 using DinnamuS_Desktop_2._0.Model.Produto.ProdutoXMLNFe;
 using DinnamuS_Desktop_2._0.Utils;
@@ -22,8 +23,11 @@ namespace ImportadorXmlNFe
     {
         SqlConnection _connection;
         ConectaDB _conectaDB;
+        CadProdutoRepository produtoRepository;
+        SituacaoTributaria_Repository _SituacaoTributaria_Repository;
         public ProdutoNFe produtoNfe;
         private ProdutoNFe produtoNfe_Restore;
+
 
         #region Variaveis de formulario
         private int tolerance = 12;
@@ -37,6 +41,7 @@ namespace ImportadorXmlNFe
         public FrmCadProdutoXmlNfe()
         {
             _conectaDB = new ConectaDB();
+            _SituacaoTributaria_Repository = new SituacaoTributaria_Repository();
             InitializeComponent();   
         }
 
@@ -128,7 +133,7 @@ namespace ImportadorXmlNFe
             CarregaCombocstIPI();
             CarregaComboPisCST();
             CarregaComboCOFINSCST();
-            CarregaPanelGrade();
+            //CarregaPanelGrade();
             CarregaDGVTabelasDePrecos();
 
             DefineSelecaoComboBoxes(produtoNfe);
@@ -257,7 +262,7 @@ namespace ImportadorXmlNFe
         {
             if (cb_CstPIS.SelectedValue != null)
             {
-                produtoNfe.cstPIS = (int)cb_CstPIS.SelectedValue;
+                produtoNfe.cstPIS = cb_CstPIS.SelectedValue.ToString();
             }
         }
 
@@ -265,7 +270,7 @@ namespace ImportadorXmlNFe
         {
             if (cb_CstCofins.SelectedValue != null)
             {
-                produtoNfe.cstCOFINS = (int)cb_CstCofins.SelectedValue;
+                produtoNfe.cstCOFINS = cb_CstCofins.SelectedValue.ToString();
             }
         }
         #endregion
@@ -355,6 +360,8 @@ namespace ImportadorXmlNFe
                     }
                 }
 
+                //modalidades = _SituacaoTributaria_Repository.RetornaSituacaoTributariaICMSPorRegimeTodas(2);
+
                 cbModalidadeDeterminaBC.ValueMember = "Codigo";
                 cbModalidadeDeterminaBC.DisplayMember = "DisplayMember";
                 cbModalidadeDeterminaBC.DataSource = modalidades;
@@ -370,34 +377,14 @@ namespace ImportadorXmlNFe
         {
             try
             {
-                List<NFE_PIS_CST> situacoesPIS = new List<NFE_PIS_CST>();
+                List<SituacaoTributaria> situacoesPIS = new List<SituacaoTributaria>();
 
-                using (_connection = _conectaDB.RetornaConexao())
-                {
-                    _connection.Open();
+                situacoesPIS = _SituacaoTributaria_Repository.RetornaSituacaoTributariaPISTodas();
 
-                    SqlCommand cmd = new SqlCommand();
-                    cmd.CommandText = "SELECT id, descricao FROM NFE_PIS_CST ORDER BY descricao";
-                    cmd.Connection = _connection;
-
-                    SqlDataReader dr = cmd.ExecuteReader();
-
-                    while (dr.Read())
-                    {
-                        situacoesPIS.Add(
-                            new NFE_PIS_CST
-                            {
-                                Id = dr.GetInt32(0),
-                                Descricao = dr.GetString(1)
-                            }
-                            );
-                    }
-                }
-
-                cb_CstPIS.ValueMember = "Id";
+                cb_CstPIS.ValueMember = "Codigo";
                 cb_CstPIS.DisplayMember = "DisplayMember";
 
-                cb_CstPIS.DataSource = situacoesPIS.OrderBy(ipi => ipi.Id).ToList<NFE_PIS_CST>();
+                cb_CstPIS.DataSource = situacoesPIS; //.OrderBy(pis => pis.Codigo).ToList<SituacaoTributaria>();
             }
             catch (Exception ex)
             {
@@ -410,34 +397,14 @@ namespace ImportadorXmlNFe
         {
             try
             {
-                List<NFE_COFINS_CST> situacoesCOFINS = new List<NFE_COFINS_CST>();
+                List<SituacaoTributaria> situacoesCOFINS = new List<SituacaoTributaria>();
 
-                using (_connection = _conectaDB.RetornaConexao())
-                {
-                    _connection.Open();
+                situacoesCOFINS = _SituacaoTributaria_Repository.RetornaSituacaoTributariaCOFINSTodas();
 
-                    SqlCommand cmd = new SqlCommand();
-                    cmd.CommandText = "SELECT id, descricao FROM NFE_COFINS_CST ORDER BY descricao";
-                    cmd.Connection = _connection;
-
-                    SqlDataReader dr = cmd.ExecuteReader();
-
-                    while (dr.Read())
-                    {
-                        situacoesCOFINS.Add(
-                            new NFE_COFINS_CST
-                            {
-                                Id = dr.GetInt32(0),
-                                Descricao = dr.GetString(1)
-                            }
-                            );
-                    }
-                }
-
-                cb_CstCofins.ValueMember = "Id";
+                cb_CstCofins.ValueMember = "Codigo";
                 cb_CstCofins.DisplayMember = "DisplayMember";
 
-                cb_CstCofins.DataSource = situacoesCOFINS.OrderBy(ipi => ipi.Id).ToList<NFE_COFINS_CST>();
+                cb_CstCofins.DataSource = situacoesCOFINS; //.OrderBy(cofins => cofins.Codigo).ToList<SituacaoTributaria>();
             }
             catch (Exception ex)
             {
@@ -450,31 +417,10 @@ namespace ImportadorXmlNFe
         {
             try
             {
-                List<NFE_PROD_SituacaoTributaria> situacoes = new List<NFE_PROD_SituacaoTributaria>();
+                List<SituacaoTributaria> situacoes = new List<SituacaoTributaria>();
 
-                using (_connection = _conectaDB.RetornaConexao())
-                {
-                    _connection.Open();
-
-                    SqlCommand cmd = new SqlCommand();
-                    cmd.CommandText = "SELECT codigo, CodigoRegimeTributario, nome FROM NFE_PROD_SituacaoTributaria WHERE CodigoRegimeTributario=@crt ORDER BY codigo";
-                    int crt = crtEmitente > 2 ? 1 : 2;
-                    cmd.Parameters.AddWithValue("@crt", crt);
-                    cmd.Connection = _connection;
-
-                    SqlDataReader dr = cmd.ExecuteReader();
-
-                    while (dr.Read())
-                    {
-                        situacoes.Add(
-                            new NFE_PROD_SituacaoTributaria
-                            {
-                                Codigo = dr.GetString(0),
-                                CodigoRegimeTributario = dr.GetInt32(1),
-                                Nome = dr.GetString(2)
-                            });
-                    }
-                }
+                int codRegime = crtEmitente > 2 ? 1 : 2;
+                situacoes = _SituacaoTributaria_Repository.RetornaSituacaoTributariaICMSPorRegimeTodas(crtEmitente);
 
                 cb_cstICMS.ValueMember = "Codigo";
                 cb_cstICMS.DisplayMember = "DisplayMember";
@@ -493,32 +439,12 @@ namespace ImportadorXmlNFe
         {
             try
             {
-                List<NFE_PROD_SituacaoIPI> situacoes = new List<NFE_PROD_SituacaoIPI>();
+                List<SituacaoTributaria> situacoes = new List<SituacaoTributaria>();
 
-                using (_connection = _conectaDB.RetornaConexao())
-                {
-                    _connection.Open();
-
-                    SqlCommand cmd = new SqlCommand();
-                    cmd.CommandText = "SELECT codigo, nome FROM NFE_PROD_SituacaoIPI ORDER BY codigo";
-                    cmd.Connection = _connection;
-
-                    SqlDataReader dr = cmd.ExecuteReader();
-
-                    while (dr.Read())
-                    {
-                        situacoes.Add(
-                            new NFE_PROD_SituacaoIPI
-                            {
-                                Codigo = dr.GetString(0),
-                                Nome = dr.GetString(1)
-                            });
-                    }
-                }
-
+                situacoes = _SituacaoTributaria_Repository.RetornaSituacaoTributariaIPITodas();
                 cb_cstIPI.ValueMember = "Codigo";
                 cb_cstIPI.DisplayMember = "DisplayMember";
-                cb_cstIPI.DataSource = situacoes.OrderBy(f => f.Codigo).ToList<NFE_PROD_SituacaoIPI>();
+                cb_cstIPI.DataSource = situacoes.OrderBy(f => f.Codigo).ToList<SituacaoTributaria>();
 
             }
 
@@ -584,6 +510,25 @@ namespace ImportadorXmlNFe
             bndTxt_REF.DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
             txt_Referencia.DataBindings.Clear();
             txt_Referencia.DataBindings.Add(bndTxt_REF);
+
+            System.Windows.Forms.Binding bndTxt_XmlLink;
+            bndTxt_XmlLink = new System.Windows.Forms.Binding("Text", dataSourceProdutoNFe, "XmlLink");
+            bndTxt_XmlLink.DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
+            txt_XmlLink.DataBindings.Clear();
+            txt_XmlLink.DataBindings.Add(bndTxt_XmlLink);
+
+            //System.Windows.Forms.Binding bndTxt_CodProdutoVincular;
+            //bndTxt_CodProdutoVincular = new System.Windows.Forms.Binding("Text", dataSourceProdutoNFe.ProdutoVinculado ?? new CadProduto(), "Codigo");
+            //bndTxt_CodProdutoVincular.DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
+            //Txt_CodProdutoVincular.DataBindings.Clear();
+            //Txt_CodProdutoVincular.DataBindings.Add(bndTxt_CodProdutoVincular);
+            Txt_CodProdutoVincular.Text = produtoNfe.ProdutoVinculado is null ? "": produtoNfe.ProdutoVinculado.Codigo.ToString();
+
+            System.Windows.Forms.Binding bndLbl_ProdutoVinculado;
+            bndLbl_ProdutoVinculado = new System.Windows.Forms.Binding("Text", dataSourceProdutoNFe.ProdutoVinculado ?? new CadProduto() {Nome = "nenhum" }, "Nome");
+            bndLbl_ProdutoVinculado.DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged;
+            lbl_ProdutoVinculado.DataBindings.Clear();
+            lbl_ProdutoVinculado.DataBindings.Add(bndLbl_ProdutoVinculado);
 
             System.Windows.Forms.Binding bndTxt_CodBarras;
             bndTxt_CodBarras = new System.Windows.Forms.Binding("Text", dataSourceProdutoNFe, "CodBarraForn");
@@ -711,6 +656,7 @@ namespace ImportadorXmlNFe
             txt_vBC_COFINS.DataBindings.Clear();
             txt_vBC_COFINS.DataBindings.Add(bndTxt_vBC_COFINS);
             //txt_Preco.Text = produtoNFe.vUnCom.ToString();
+            //txt_Preco.Text = produtoNFe.vUnCom.ToString();
         }
         private void CapturaRadioButton(object sender, EventArgs e)
         {
@@ -734,14 +680,95 @@ namespace ImportadorXmlNFe
                 dgvTabelasDePrecos.Refresh();
             }
         }
+
+        private void Btn_Vincular_Click(object sender, EventArgs e)
+        {
+            string codigoProduto = Txt_CodProdutoVincular.Text;
+            codigoProduto = codigoProduto.Trim();
+            Txt_CodProdutoVincular.Text = codigoProduto;
+
+            if (codigoProduto == string.Empty)
+            {
+                return;
+            }
+
+            else
+            {
+                for (int i = 0; i < codigoProduto.Length; i++)
+                {
+                    char c = codigoProduto[i];
+
+                    if (!DinnamuS_Desktop_2._0.Utils.ValidaNumero.Validar(c))
+                    {
+                        MessageBox.Show("O valor digitado é inválido! Digite apenas números", "Erro do Operador", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Txt_CodProdutoVincular.Focus();
+                        return;
+                    }
+                }
+            }
+
+            if (produtoNfe.ProdutoVinculado is null)
+            {
+                produtoRepository = new CadProdutoRepository();
+                CadProduto produtoAVincular = produtoRepository.RetornaProduto(TiposParametrosConsultaProdutos.Parametro.Codigo, long.Parse(codigoProduto));
+
+                if (produtoAVincular != null)
+                {
+                    if (!string.IsNullOrEmpty(produtoAVincular.ItensGrade[0].XmlLink))
+                    {
+                        if (MessageBox.Show($"O produto de código {codigoProduto} - ({produtoAVincular.Nome}) já foi vinculado a outro item via Nota Fiscal.\nDeseja atualizar este vínculo?", "Vincular item", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                        {
+                            //Cria novo vínculo
+                            VinculaItemNFe(produtoAVincular, produtoAVincular.ItensGrade[0].ChaveUnica, produtoNfe.XmlLink);
+                        }
+                    }
+                    else
+                    {
+                        VinculaItemNFe(produtoAVincular, produtoAVincular.ItensGrade[0].ChaveUnica, produtoNfe.XmlLink);
+                    }
+                }
+            }
+
+            else
+            {
+                if (produtoNfe.ProdutoVinculado.Codigo.ToString() == codigoProduto)
+                {
+                    return;
+                }
+
+                produtoRepository = new CadProdutoRepository();
+                CadProduto produtoAVincular = produtoRepository.RetornaProduto(TiposParametrosConsultaProdutos.Parametro.Codigo, long.Parse(codigoProduto));
+
+                if (produtoAVincular is null)
+                {
+                    return;
+                }
+
+                if (MessageBox.Show($"O produto de código {codigoProduto} - ({produtoAVincular.Nome}) já foi vinculado a outro item via Nota Fiscal.\nDeseja atualizar este vínculo?", "Vincular item", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                {
+                    //Quebra o link atual
+                    produtoRepository.UpdateXmlLink(produtoNfe.ProdutoVinculado.Chaveunica, produtoNfe.ItensGradeProdutos[0].ChaveUnica, string.Empty);
+                    //Cria novo vínculo
+                    VinculaItemNFe(produtoNfe.ProdutoVinculado, produtoNfe.ProdutoVinculado.ItensGrade[0].ChaveUnica, produtoNfe.XmlLink);
+                }                
+            }
+        }
+
+        private void VinculaItemNFe(CadProduto produtoAVincular, int chaveItemGrade, string xmlLink)
+        {
+            int retorno = produtoRepository.UpdateXmlLink(produtoAVincular.Chaveunica, chaveItemGrade, xmlLink);
+            if (retorno > 0)
+            {
+                produtoNfe.ProdutoVinculado = produtoAVincular;
+                produtoNfe.isExiste = true;
+                lbl_ProdutoVinculado.Text = $"{produtoAVincular.Nome}";
+                MessageBox.Show($"O item {produtoNfe.xProd} foi vinculado ao produto {produtoAVincular.Nome}", "Vinculação de Produtos", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+        }
+
         private void btnRestaurar_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Função em Desenvolvimento. Entre em contato com o suporte para previsão", "Mensagem da DinnamuS", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            //if ( MessageBox.Show("Confirma a restauração dos dados presentes no XML da Nota Fiscal para este produto?", "Restaurar Valores", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-            //{
-            //    produtoNfe = produtoNfe_Restore;
-            //    VinculaComponentesForm(produtoNfe);
-            //}
         }
 
         private void FormataDataGridView()

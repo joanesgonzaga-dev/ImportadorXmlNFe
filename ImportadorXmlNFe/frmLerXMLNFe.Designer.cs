@@ -32,7 +32,6 @@ namespace ImportadorXmlNFe
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.txtLocalXML = new System.Windows.Forms.TextBox();
             this.btnLocalizarXML = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
@@ -50,6 +49,16 @@ namespace ImportadorXmlNFe
             this.panelStatus = new System.Windows.Forms.Panel();
             this.lblMensagemStatus = new System.Windows.Forms.Label();
             this.dgvProdutos = new System.Windows.Forms.DataGridView();
+            this.cProd = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cEAN = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.xProd = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.qCom = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.vUnCom = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.vProd = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.isExiste = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.acaoProdNFe = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.cad = new System.Windows.Forms.DataGridViewImageColumn();
+            this.vinc = new System.Windows.Forms.DataGridViewImageColumn();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -69,17 +78,6 @@ namespace ImportadorXmlNFe
             this.label9 = new System.Windows.Forms.Label();
             this.dataGridViewImageColumn1 = new System.Windows.Forms.DataGridViewImageColumn();
             this.dataGridViewImageColumn2 = new System.Windows.Forms.DataGridViewImageColumn();
-            this.acaoProdutoNFeBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.cProd = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cEAN = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.xProd = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.qCom = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.vUnCom = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.vProd = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.isExiste = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.acaoProdNFe = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.cad = new System.Windows.Forms.DataGridViewImageColumn();
-            this.vinc = new System.Windows.Forms.DataGridViewImageColumn();
             this.groupBox2.SuspendLayout();
             this.panelStatus.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProdutos)).BeginInit();
@@ -89,7 +87,6 @@ namespace ImportadorXmlNFe
             this.groupBox3.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.acaoProdutoNFeBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // txtLocalXML
@@ -309,6 +306,94 @@ namespace ImportadorXmlNFe
             this.dgvProdutos.Size = new System.Drawing.Size(1184, 354);
             this.dgvProdutos.TabIndex = 4;
             this.dgvProdutos.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvProdutos_CellClick);
+            // 
+            // cProd
+            // 
+            this.cProd.DataPropertyName = "cProd";
+            this.cProd.HeaderText = "Código";
+            this.cProd.MinimumWidth = 90;
+            this.cProd.Name = "cProd";
+            this.cProd.ReadOnly = true;
+            this.cProd.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cProd.Width = 90;
+            // 
+            // cEAN
+            // 
+            this.cEAN.DataPropertyName = "cEAN";
+            this.cEAN.HeaderText = "GTIN";
+            this.cEAN.Name = "cEAN";
+            this.cEAN.ReadOnly = true;
+            // 
+            // xProd
+            // 
+            this.xProd.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.xProd.DataPropertyName = "xProd";
+            this.xProd.HeaderText = "Descrição";
+            this.xProd.Name = "xProd";
+            this.xProd.ReadOnly = true;
+            // 
+            // qCom
+            // 
+            this.qCom.DataPropertyName = "qCom";
+            this.qCom.HeaderText = "Quantidade";
+            this.qCom.Name = "qCom";
+            this.qCom.ReadOnly = true;
+            this.qCom.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            // 
+            // vUnCom
+            // 
+            this.vUnCom.DataPropertyName = "vUnCom";
+            this.vUnCom.HeaderText = "Preço";
+            this.vUnCom.Name = "vUnCom";
+            this.vUnCom.ReadOnly = true;
+            // 
+            // vProd
+            // 
+            this.vProd.DataPropertyName = "vProd";
+            this.vProd.HeaderText = "Total";
+            this.vProd.Name = "vProd";
+            this.vProd.ReadOnly = true;
+            // 
+            // isExiste
+            // 
+            this.isExiste.DataPropertyName = "isExiste";
+            this.isExiste.FalseValue = "";
+            this.isExiste.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.isExiste.HeaderText = "Existe?";
+            this.isExiste.Name = "isExiste";
+            this.isExiste.ReadOnly = true;
+            this.isExiste.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.isExiste.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
+            // acaoProdNFe
+            // 
+            this.acaoProdNFe.AutoComplete = false;
+            this.acaoProdNFe.DataPropertyName = "acaoProdNFe";
+            this.acaoProdNFe.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
+            this.acaoProdNFe.HeaderText = "Ação";
+            this.acaoProdNFe.Name = "acaoProdNFe";
+            this.acaoProdNFe.Visible = false;
+            // 
+            // cad
+            // 
+            this.cad.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.cad.FillWeight = 30F;
+            this.cad.HeaderText = "";
+            this.cad.Image = global::ImportadorXmlNFe.Properties.Resources.edit_16;
+            this.cad.MinimumWidth = 30;
+            this.cad.Name = "cad";
+            this.cad.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cad.Width = 30;
+            // 
+            // vinc
+            // 
+            this.vinc.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.vinc.FillWeight = 32F;
+            this.vinc.HeaderText = "";
+            this.vinc.MinimumWidth = 30;
+            this.vinc.Name = "vinc";
+            this.vinc.Visible = false;
+            this.vinc.Width = 32;
             // 
             // tabControl1
             // 
@@ -555,99 +640,7 @@ namespace ImportadorXmlNFe
             this.dataGridViewImageColumn2.Visible = false;
             this.dataGridViewImageColumn2.Width = 30;
             // 
-            // acaoProdutoNFeBindingSource
-            // 
-            this.acaoProdutoNFeBindingSource.DataSource = typeof(DinnamuS_Desktop_2._0.Model.Produto.ProdutoXMLNFe.AcoesProdutoNFe);
-            // 
-            // cProd
-            // 
-            this.cProd.DataPropertyName = "cProd";
-            this.cProd.HeaderText = "Código";
-            this.cProd.MinimumWidth = 90;
-            this.cProd.Name = "cProd";
-            this.cProd.ReadOnly = true;
-            this.cProd.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cProd.Width = 90;
-            // 
-            // cEAN
-            // 
-            this.cEAN.DataPropertyName = "cEAN";
-            this.cEAN.HeaderText = "GTIN";
-            this.cEAN.Name = "cEAN";
-            this.cEAN.ReadOnly = true;
-            // 
-            // xProd
-            // 
-            this.xProd.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.xProd.DataPropertyName = "xProd";
-            this.xProd.HeaderText = "Descrição";
-            this.xProd.Name = "xProd";
-            this.xProd.ReadOnly = true;
-            // 
-            // qCom
-            // 
-            this.qCom.DataPropertyName = "qCom";
-            this.qCom.HeaderText = "Quantidade";
-            this.qCom.Name = "qCom";
-            this.qCom.ReadOnly = true;
-            this.qCom.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            // 
-            // vUnCom
-            // 
-            this.vUnCom.DataPropertyName = "vUnCom";
-            this.vUnCom.HeaderText = "Preço";
-            this.vUnCom.Name = "vUnCom";
-            this.vUnCom.ReadOnly = true;
-            // 
-            // vProd
-            // 
-            this.vProd.DataPropertyName = "vProd";
-            this.vProd.HeaderText = "Total";
-            this.vProd.Name = "vProd";
-            this.vProd.ReadOnly = true;
-            // 
-            // isExiste
-            // 
-            this.isExiste.DataPropertyName = "isExiste";
-            this.isExiste.FalseValue = "";
-            this.isExiste.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.isExiste.HeaderText = "Existe?";
-            this.isExiste.Name = "isExiste";
-            this.isExiste.ReadOnly = true;
-            this.isExiste.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.isExiste.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            // 
-            // acaoProdNFe
-            // 
-            this.acaoProdNFe.AutoComplete = false;
-            this.acaoProdNFe.DataPropertyName = "acaoProdNFe";
-            this.acaoProdNFe.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
-            this.acaoProdNFe.HeaderText = "Ação";
-            this.acaoProdNFe.Name = "acaoProdNFe";
-            this.acaoProdNFe.Visible = false;
-            // 
-            // cad
-            // 
-            this.cad.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.cad.FillWeight = 30F;
-            this.cad.HeaderText = "";
-            this.cad.Image = global::ImportadorXmlNFe.Properties.Resources.edit_16;
-            this.cad.MinimumWidth = 30;
-            this.cad.Name = "cad";
-            this.cad.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cad.Width = 30;
-            // 
-            // vinc
-            // 
-            this.vinc.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.vinc.FillWeight = 32F;
-            this.vinc.HeaderText = "";
-            this.vinc.MinimumWidth = 30;
-            this.vinc.Name = "vinc";
-            this.vinc.Visible = false;
-            this.vinc.Width = 32;
-            // 
-            // frmLerXMLNFe
+            // FrmLerXMLNFe
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -659,7 +652,7 @@ namespace ImportadorXmlNFe
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.groupBox2);
             this.Margin = new System.Windows.Forms.Padding(2);
-            this.Name = "frmLerXMLNFe";
+            this.Name = "FrmLerXMLNFe";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Leitura e Importação de XML da NFe";
             this.Load += new System.EventHandler(this.frmLerXMLNFe_Load);
@@ -676,7 +669,6 @@ namespace ImportadorXmlNFe
             this.panel1.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.acaoProdutoNFeBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -705,7 +697,6 @@ namespace ImportadorXmlNFe
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.Button btnImportarXML;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.BindingSource acaoProdutoNFeBindingSource;
         private System.Windows.Forms.DataGridViewImageColumn dataGridViewImageColumn1;
         private System.Windows.Forms.DataGridViewImageColumn dataGridViewImageColumn2;
         private System.Windows.Forms.Label label7;

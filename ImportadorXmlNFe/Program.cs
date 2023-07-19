@@ -1,5 +1,6 @@
 ﻿using DinnamuS_Desktop_2._0.Data.Persistence;
 using DinnamuS_Desktop_2._0.Model.Infra;
+using Serilog;
 using System;
 using System.Windows.Forms;
 
@@ -14,9 +15,25 @@ namespace ImportadorXmlNFe
         [STAThread]
         static void Main()
         {
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.File("ImportadorLog.txt", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
             try
             {
-                Loja = new LojaPersistence().RetornaLojaDeTrabalho();
+                DinRegistry dinRegistry = new DinRegistry();
+                dinRegistry.LerRegedit();
+
+                Loja = new Loja();
+                int codLoja = int.Parse(dinRegistry.CONFIG.LojaAtiva);
+                Loja.Codigo = codLoja;
+                int codFilial = int.Parse(dinRegistry.CONFIG.FilialAtiva);
+                Loja.FilialPadrao = codFilial;
+                Loja.CNPJ = dinRegistry.CONFIG.CnpjLojaAtiva;
+                Loja.CodigoRegimeTributario = Int32.Parse(dinRegistry.CONFIG.CodigoRegimeTributario);
+
+                Loja.Filiais = new LojaPersistence().RetornaFiliais(int.Parse(dinRegistry.CONFIG.LojaAtiva));
+                 
+                //Loja = new LojaPersistence().RetornaLojaDeTrabalho();
 
 
             }

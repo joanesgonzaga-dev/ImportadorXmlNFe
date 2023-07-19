@@ -30,8 +30,13 @@ namespace ImportadorXmlNFe
         private void InitializeComponent()
         {
             this.panelBase = new System.Windows.Forms.Panel();
+            this.panel8 = new System.Windows.Forms.Panel();
+            this.lbl_ProdutoVinculado = new System.Windows.Forms.Label();
+            this.Btn_Vincular = new System.Windows.Forms.Button();
+            this.Txt_CodProdutoVincular = new System.Windows.Forms.TextBox();
+            this.LblXmlLink = new System.Windows.Forms.Label();
+            this.txt_XmlLink = new System.Windows.Forms.TextBox();
             this.chkb_AlterarPrecos = new System.Windows.Forms.CheckBox();
-            this.label30 = new System.Windows.Forms.Label();
             this.txt_CodigoBarras = new System.Windows.Forms.TextBox();
             this.chkb_isFracionado = new System.Windows.Forms.CheckBox();
             this.label29 = new System.Windows.Forms.Label();
@@ -106,15 +111,17 @@ namespace ImportadorXmlNFe
             this.txt_Un = new System.Windows.Forms.TextBox();
             this.txt_Nome = new System.Windows.Forms.TextBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.panelBarraTitulo = new System.Windows.Forms.Panel();
-            this.label1 = new System.Windows.Forms.Label();
             this.BtnVincular = new System.Windows.Forms.Button();
             this.btnRestaurar = new System.Windows.Forms.Button();
+            this.panelBarraTitulo = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
             this.btnRestore = new System.Windows.Forms.PictureBox();
             this.btnMinimize = new System.Windows.Forms.PictureBox();
             this.btnMax = new System.Windows.Forms.PictureBox();
             this.btnClose = new System.Windows.Forms.PictureBox();
+            this.label26 = new System.Windows.Forms.Label();
             this.panelBase.SuspendLayout();
+            this.panel8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTabelasDePrecos)).BeginInit();
             this.tabFiscal.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -133,8 +140,12 @@ namespace ImportadorXmlNFe
             // panelBase
             // 
             this.panelBase.BackColor = System.Drawing.Color.NavajoWhite;
+            this.panelBase.Controls.Add(this.panel8);
+            this.panelBase.Controls.Add(this.Btn_Vincular);
+            this.panelBase.Controls.Add(this.Txt_CodProdutoVincular);
+            this.panelBase.Controls.Add(this.LblXmlLink);
+            this.panelBase.Controls.Add(this.txt_XmlLink);
             this.panelBase.Controls.Add(this.chkb_AlterarPrecos);
-            this.panelBase.Controls.Add(this.label30);
             this.panelBase.Controls.Add(this.txt_CodigoBarras);
             this.panelBase.Controls.Add(this.chkb_isFracionado);
             this.panelBase.Controls.Add(this.label29);
@@ -168,10 +179,73 @@ namespace ImportadorXmlNFe
             this.panelBase.Size = new System.Drawing.Size(1020, 747);
             this.panelBase.TabIndex = 0;
             // 
+            // panel8
+            // 
+            this.panel8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(23)))), ((int)(((byte)(31)))));
+            this.panel8.Controls.Add(this.label26);
+            this.panel8.Controls.Add(this.lbl_ProdutoVinculado);
+            this.panel8.Location = new System.Drawing.Point(209, 234);
+            this.panel8.Name = "panel8";
+            this.panel8.Size = new System.Drawing.Size(514, 24);
+            this.panel8.TabIndex = 57;
+            // 
+            // lbl_ProdutoVinculado
+            // 
+            this.lbl_ProdutoVinculado.AutoSize = true;
+            this.lbl_ProdutoVinculado.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_ProdutoVinculado.ForeColor = System.Drawing.Color.White;
+            this.lbl_ProdutoVinculado.Location = new System.Drawing.Point(118, 6);
+            this.lbl_ProdutoVinculado.Name = "lbl_ProdutoVinculado";
+            this.lbl_ProdutoVinculado.Size = new System.Drawing.Size(51, 13);
+            this.lbl_ProdutoVinculado.TabIndex = 52;
+            this.lbl_ProdutoVinculado.Text = "nenhum";
+            // 
+            // Btn_Vincular
+            // 
+            this.Btn_Vincular.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(23)))), ((int)(((byte)(31)))));
+            this.Btn_Vincular.FlatAppearance.BorderSize = 0;
+            this.Btn_Vincular.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.Btn_Vincular.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Btn_Vincular.ForeColor = System.Drawing.SystemColors.Control;
+            this.Btn_Vincular.Image = global::ImportadorXmlNFe.Properties.Resources.bind_16;
+            this.Btn_Vincular.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.Btn_Vincular.Location = new System.Drawing.Point(637, 193);
+            this.Btn_Vincular.Name = "Btn_Vincular";
+            this.Btn_Vincular.Size = new System.Drawing.Size(86, 32);
+            this.Btn_Vincular.TabIndex = 2;
+            this.Btn_Vincular.Text = "Vincular";
+            this.Btn_Vincular.UseVisualStyleBackColor = false;
+            this.Btn_Vincular.Click += new System.EventHandler(this.Btn_Vincular_Click);
+            // 
+            // Txt_CodProdutoVincular
+            // 
+            this.Txt_CodProdutoVincular.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Txt_CodProdutoVincular.Location = new System.Drawing.Point(470, 193);
+            this.Txt_CodProdutoVincular.Name = "Txt_CodProdutoVincular";
+            this.Txt_CodProdutoVincular.Size = new System.Drawing.Size(163, 33);
+            this.Txt_CodProdutoVincular.TabIndex = 56;
+            // 
+            // LblXmlLink
+            // 
+            this.LblXmlLink.AutoSize = true;
+            this.LblXmlLink.Location = new System.Drawing.Point(209, 177);
+            this.LblXmlLink.Name = "LblXmlLink";
+            this.LblXmlLink.Size = new System.Drawing.Size(55, 13);
+            this.LblXmlLink.TabIndex = 55;
+            this.LblXmlLink.Text = "XML Link:";
+            // 
+            // txt_XmlLink
+            // 
+            this.txt_XmlLink.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_XmlLink.Location = new System.Drawing.Point(210, 193);
+            this.txt_XmlLink.Name = "txt_XmlLink";
+            this.txt_XmlLink.Size = new System.Drawing.Size(254, 33);
+            this.txt_XmlLink.TabIndex = 54;
+            // 
             // chkb_AlterarPrecos
             // 
             this.chkb_AlterarPrecos.AutoSize = true;
-            this.chkb_AlterarPrecos.Location = new System.Drawing.Point(210, 256);
+            this.chkb_AlterarPrecos.Location = new System.Drawing.Point(209, 273);
             this.chkb_AlterarPrecos.Name = "chkb_AlterarPrecos";
             this.chkb_AlterarPrecos.Size = new System.Drawing.Size(139, 17);
             this.chkb_AlterarPrecos.TabIndex = 53;
@@ -179,22 +253,14 @@ namespace ImportadorXmlNFe
             this.chkb_AlterarPrecos.UseVisualStyleBackColor = true;
             this.chkb_AlterarPrecos.CheckStateChanged += new System.EventHandler(this.chkb_AlterarPrecos_CheckStateChanged);
             // 
-            // label30
-            // 
-            this.label30.AutoSize = true;
-            this.label30.Location = new System.Drawing.Point(210, 178);
-            this.label30.Name = "label30";
-            this.label30.Size = new System.Drawing.Size(89, 13);
-            this.label30.TabIndex = 52;
-            this.label30.Text = "código de barras:";
-            // 
             // txt_CodigoBarras
             // 
             this.txt_CodigoBarras.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_CodigoBarras.Location = new System.Drawing.Point(210, 194);
+            this.txt_CodigoBarras.Location = new System.Drawing.Point(884, 346);
             this.txt_CodigoBarras.Name = "txt_CodigoBarras";
-            this.txt_CodigoBarras.Size = new System.Drawing.Size(257, 33);
+            this.txt_CodigoBarras.Size = new System.Drawing.Size(54, 33);
             this.txt_CodigoBarras.TabIndex = 51;
+            this.txt_CodigoBarras.Visible = false;
             // 
             // chkb_isFracionado
             // 
@@ -234,7 +300,7 @@ namespace ImportadorXmlNFe
             this.codigotabela,
             this.nometabela,
             this.PrecoVenda});
-            this.dgvTabelasDePrecos.Location = new System.Drawing.Point(210, 279);
+            this.dgvTabelasDePrecos.Location = new System.Drawing.Point(206, 296);
             this.dgvTabelasDePrecos.Name = "dgvTabelasDePrecos";
             this.dgvTabelasDePrecos.Size = new System.Drawing.Size(551, 100);
             this.dgvTabelasDePrecos.TabIndex = 45;
@@ -320,10 +386,10 @@ namespace ImportadorXmlNFe
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabFiscal.Controls.Add(this.tabPage1);
-            this.tabFiscal.Location = new System.Drawing.Point(206, 385);
+            this.tabFiscal.Location = new System.Drawing.Point(206, 402);
             this.tabFiscal.Name = "tabFiscal";
             this.tabFiscal.SelectedIndex = 0;
-            this.tabFiscal.Size = new System.Drawing.Size(802, 350);
+            this.tabFiscal.Size = new System.Drawing.Size(802, 333);
             this.tabFiscal.TabIndex = 42;
             // 
             // tabPage1
@@ -342,7 +408,7 @@ namespace ImportadorXmlNFe
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(794, 324);
+            this.tabPage1.Size = new System.Drawing.Size(794, 307);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Fiscal";
             // 
@@ -361,7 +427,7 @@ namespace ImportadorXmlNFe
             this.panel7.Controls.Add(this.label16);
             this.panel7.Location = new System.Drawing.Point(13, 364);
             this.panel7.Name = "panel7";
-            this.panel7.Size = new System.Drawing.Size(624, 86);
+            this.panel7.Size = new System.Drawing.Size(590, 86);
             this.panel7.TabIndex = 48;
             // 
             // label25
@@ -424,7 +490,7 @@ namespace ImportadorXmlNFe
             this.cb_CstCofins.FormattingEnabled = true;
             this.cb_CstCofins.Location = new System.Drawing.Point(286, 31);
             this.cb_CstCofins.Name = "cb_CstCofins";
-            this.cb_CstCofins.Size = new System.Drawing.Size(291, 33);
+            this.cb_CstCofins.Size = new System.Drawing.Size(257, 33);
             this.cb_CstCofins.TabIndex = 32;
             // 
             // label16
@@ -451,7 +517,7 @@ namespace ImportadorXmlNFe
             this.panel6.Controls.Add(this.label12);
             this.panel6.Location = new System.Drawing.Point(13, 272);
             this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(624, 86);
+            this.panel6.Size = new System.Drawing.Size(590, 86);
             this.panel6.TabIndex = 47;
             // 
             // txt_vBC_PIS
@@ -517,7 +583,7 @@ namespace ImportadorXmlNFe
             this.cb_CstPIS.FormattingEnabled = true;
             this.cb_CstPIS.Location = new System.Drawing.Point(286, 28);
             this.cb_CstPIS.Name = "cb_CstPIS";
-            this.cb_CstPIS.Size = new System.Drawing.Size(291, 33);
+            this.cb_CstPIS.Size = new System.Drawing.Size(257, 33);
             this.cb_CstPIS.TabIndex = 22;
             // 
             // label12
@@ -546,7 +612,7 @@ namespace ImportadorXmlNFe
             this.panel5.Controls.Add(this.label13);
             this.panel5.Location = new System.Drawing.Point(13, 179);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(624, 86);
+            this.panel5.Size = new System.Drawing.Size(590, 86);
             this.panel5.TabIndex = 46;
             // 
             // label23
@@ -585,7 +651,7 @@ namespace ImportadorXmlNFe
             this.cb_cstIPI.FormattingEnabled = true;
             this.cb_cstIPI.Location = new System.Drawing.Point(377, 24);
             this.cb_cstIPI.Name = "cb_cstIPI";
-            this.cb_cstIPI.Size = new System.Drawing.Size(200, 33);
+            this.cb_cstIPI.Size = new System.Drawing.Size(166, 33);
             this.cb_cstIPI.TabIndex = 30;
             // 
             // label20
@@ -657,7 +723,7 @@ namespace ImportadorXmlNFe
             this.panel4.Controls.Add(this.label11);
             this.panel4.Location = new System.Drawing.Point(13, 87);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(624, 86);
+            this.panel4.Size = new System.Drawing.Size(590, 86);
             this.panel4.TabIndex = 45;
             // 
             // txt_vBC_ICMS
@@ -723,7 +789,7 @@ namespace ImportadorXmlNFe
             this.cb_cstICMS.FormattingEnabled = true;
             this.cb_cstICMS.Location = new System.Drawing.Point(286, 31);
             this.cb_cstICMS.Name = "cb_cstICMS";
-            this.cb_cstICMS.Size = new System.Drawing.Size(291, 33);
+            this.cb_cstICMS.Size = new System.Drawing.Size(257, 33);
             this.cb_cstICMS.TabIndex = 15;
             // 
             // label11
@@ -903,9 +969,9 @@ namespace ImportadorXmlNFe
             this.txt_Nome.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txt_Nome.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_Nome.Location = new System.Drawing.Point(206, 71);
+            this.txt_Nome.Location = new System.Drawing.Point(210, 71);
             this.txt_Nome.Name = "txt_Nome";
-            this.txt_Nome.Size = new System.Drawing.Size(557, 33);
+            this.txt_Nome.Size = new System.Drawing.Size(553, 33);
             this.txt_Nome.TabIndex = 2;
             // 
             // panel1
@@ -918,32 +984,6 @@ namespace ImportadorXmlNFe
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(200, 707);
             this.panel1.TabIndex = 1;
-            // 
-            // panelBarraTitulo
-            // 
-            this.panelBarraTitulo.BackColor = System.Drawing.Color.Black;
-            this.panelBarraTitulo.Controls.Add(this.label1);
-            this.panelBarraTitulo.Controls.Add(this.btnRestore);
-            this.panelBarraTitulo.Controls.Add(this.btnMinimize);
-            this.panelBarraTitulo.Controls.Add(this.btnMax);
-            this.panelBarraTitulo.Controls.Add(this.btnClose);
-            this.panelBarraTitulo.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelBarraTitulo.Location = new System.Drawing.Point(0, 0);
-            this.panelBarraTitulo.Name = "panelBarraTitulo";
-            this.panelBarraTitulo.Size = new System.Drawing.Size(1020, 40);
-            this.panelBarraTitulo.TabIndex = 0;
-            this.panelBarraTitulo.MouseMove += new System.Windows.Forms.MouseEventHandler(this.panelBarraTitulo_MouseMove);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.ForeColor = System.Drawing.SystemColors.Control;
-            this.label1.Location = new System.Drawing.Point(5, 8);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(278, 25);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "Cadastro de Produtos pela NFe ";
             // 
             // BtnVincular
             // 
@@ -977,6 +1017,32 @@ namespace ImportadorXmlNFe
             this.btnRestaurar.Text = "Restaurar";
             this.btnRestaurar.UseVisualStyleBackColor = false;
             this.btnRestaurar.Click += new System.EventHandler(this.btnRestaurar_Click);
+            // 
+            // panelBarraTitulo
+            // 
+            this.panelBarraTitulo.BackColor = System.Drawing.Color.Black;
+            this.panelBarraTitulo.Controls.Add(this.label1);
+            this.panelBarraTitulo.Controls.Add(this.btnRestore);
+            this.panelBarraTitulo.Controls.Add(this.btnMinimize);
+            this.panelBarraTitulo.Controls.Add(this.btnMax);
+            this.panelBarraTitulo.Controls.Add(this.btnClose);
+            this.panelBarraTitulo.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelBarraTitulo.Location = new System.Drawing.Point(0, 0);
+            this.panelBarraTitulo.Name = "panelBarraTitulo";
+            this.panelBarraTitulo.Size = new System.Drawing.Size(1020, 40);
+            this.panelBarraTitulo.TabIndex = 0;
+            this.panelBarraTitulo.MouseMove += new System.Windows.Forms.MouseEventHandler(this.panelBarraTitulo_MouseMove);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.ForeColor = System.Drawing.SystemColors.Control;
+            this.label1.Location = new System.Drawing.Point(5, 8);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(278, 25);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "Cadastro de Produtos pela NFe ";
             // 
             // btnRestore
             // 
@@ -1022,6 +1088,17 @@ namespace ImportadorXmlNFe
             this.btnClose.TabStop = false;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label26.ForeColor = System.Drawing.Color.White;
+            this.label26.Location = new System.Drawing.Point(3, 6);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(114, 13);
+            this.label26.TabIndex = 53;
+            this.label26.Text = "Produto vinculado:";
+            // 
             // FrmCadProdutoXmlNfe
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1036,6 +1113,8 @@ namespace ImportadorXmlNFe
             this.Load += new System.EventHandler(this.frmCadProdutoXmlNfe_Load);
             this.panelBase.ResumeLayout(false);
             this.panelBase.PerformLayout();
+            this.panel8.ResumeLayout(false);
+            this.panel8.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTabelasDePrecos)).EndInit();
             this.tabFiscal.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
@@ -1142,9 +1221,15 @@ namespace ImportadorXmlNFe
         private System.Windows.Forms.Label label29;
         private System.Windows.Forms.TextBox txt_Referencia;
         private System.Windows.Forms.CheckBox chkb_isFracionado;
-        private System.Windows.Forms.Label label30;
+        private System.Windows.Forms.Label lbl_ProdutoVinculado;
         private System.Windows.Forms.TextBox txt_CodigoBarras;
         private System.Windows.Forms.CheckBox chkb_AlterarPrecos;
         private System.Windows.Forms.Button BtnVincular;
+        private System.Windows.Forms.Label LblXmlLink;
+        private System.Windows.Forms.TextBox txt_XmlLink;
+        private System.Windows.Forms.TextBox Txt_CodProdutoVincular;
+        private System.Windows.Forms.Button Btn_Vincular;
+        private System.Windows.Forms.Panel panel8;
+        private System.Windows.Forms.Label label26;
     }
 }
