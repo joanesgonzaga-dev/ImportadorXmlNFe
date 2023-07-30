@@ -29,8 +29,10 @@ namespace ImportadorXmlNFe
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panelBase = new System.Windows.Forms.Panel();
             this.panel8 = new System.Windows.Forms.Panel();
+            this.label26 = new System.Windows.Forms.Label();
             this.lbl_ProdutoVinculado = new System.Windows.Forms.Label();
             this.Btn_Vincular = new System.Windows.Forms.Button();
             this.Txt_CodProdutoVincular = new System.Windows.Forms.TextBox();
@@ -119,7 +121,6 @@ namespace ImportadorXmlNFe
             this.btnMinimize = new System.Windows.Forms.PictureBox();
             this.btnMax = new System.Windows.Forms.PictureBox();
             this.btnClose = new System.Windows.Forms.PictureBox();
-            this.label26 = new System.Windows.Forms.Label();
             this.panelBase.SuspendLayout();
             this.panel8.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvTabelasDePrecos)).BeginInit();
@@ -176,7 +177,7 @@ namespace ImportadorXmlNFe
             this.panelBase.Location = new System.Drawing.Point(0, 0);
             this.panelBase.MinimumSize = new System.Drawing.Size(940, 558);
             this.panelBase.Name = "panelBase";
-            this.panelBase.Size = new System.Drawing.Size(1020, 747);
+            this.panelBase.Size = new System.Drawing.Size(1023, 664);
             this.panelBase.TabIndex = 0;
             // 
             // panel8
@@ -184,10 +185,21 @@ namespace ImportadorXmlNFe
             this.panel8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(23)))), ((int)(((byte)(31)))));
             this.panel8.Controls.Add(this.label26);
             this.panel8.Controls.Add(this.lbl_ProdutoVinculado);
-            this.panel8.Location = new System.Drawing.Point(209, 234);
+            this.panel8.Location = new System.Drawing.Point(209, 204);
             this.panel8.Name = "panel8";
-            this.panel8.Size = new System.Drawing.Size(514, 24);
+            this.panel8.Size = new System.Drawing.Size(552, 24);
             this.panel8.TabIndex = 57;
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label26.ForeColor = System.Drawing.Color.White;
+            this.label26.Location = new System.Drawing.Point(3, 6);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(114, 13);
+            this.label26.TabIndex = 53;
+            this.label26.Text = "Produto vinculado:";
             // 
             // lbl_ProdutoVinculado
             // 
@@ -209,26 +221,26 @@ namespace ImportadorXmlNFe
             this.Btn_Vincular.ForeColor = System.Drawing.SystemColors.Control;
             this.Btn_Vincular.Image = global::ImportadorXmlNFe.Properties.Resources.bind_16;
             this.Btn_Vincular.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.Btn_Vincular.Location = new System.Drawing.Point(637, 193);
+            this.Btn_Vincular.Location = new System.Drawing.Point(637, 168);
             this.Btn_Vincular.Name = "Btn_Vincular";
-            this.Btn_Vincular.Size = new System.Drawing.Size(86, 32);
-            this.Btn_Vincular.TabIndex = 2;
+            this.Btn_Vincular.Size = new System.Drawing.Size(113, 32);
+            this.Btn_Vincular.TabIndex = 5;
             this.Btn_Vincular.Text = "Vincular";
             this.Btn_Vincular.UseVisualStyleBackColor = false;
             this.Btn_Vincular.Click += new System.EventHandler(this.Btn_Vincular_Click);
             // 
             // Txt_CodProdutoVincular
             // 
-            this.Txt_CodProdutoVincular.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Txt_CodProdutoVincular.Location = new System.Drawing.Point(470, 193);
+            this.Txt_CodProdutoVincular.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Txt_CodProdutoVincular.Location = new System.Drawing.Point(470, 170);
             this.Txt_CodProdutoVincular.Name = "Txt_CodProdutoVincular";
-            this.Txt_CodProdutoVincular.Size = new System.Drawing.Size(163, 33);
-            this.Txt_CodProdutoVincular.TabIndex = 56;
+            this.Txt_CodProdutoVincular.Size = new System.Drawing.Size(163, 29);
+            this.Txt_CodProdutoVincular.TabIndex = 4;
             // 
             // LblXmlLink
             // 
             this.LblXmlLink.AutoSize = true;
-            this.LblXmlLink.Location = new System.Drawing.Point(209, 177);
+            this.LblXmlLink.Location = new System.Drawing.Point(209, 154);
             this.LblXmlLink.Name = "LblXmlLink";
             this.LblXmlLink.Size = new System.Drawing.Size(55, 13);
             this.LblXmlLink.TabIndex = 55;
@@ -236,27 +248,27 @@ namespace ImportadorXmlNFe
             // 
             // txt_XmlLink
             // 
-            this.txt_XmlLink.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_XmlLink.Location = new System.Drawing.Point(210, 193);
+            this.txt_XmlLink.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_XmlLink.Location = new System.Drawing.Point(210, 170);
             this.txt_XmlLink.Name = "txt_XmlLink";
-            this.txt_XmlLink.Size = new System.Drawing.Size(254, 33);
+            this.txt_XmlLink.Size = new System.Drawing.Size(254, 29);
             this.txt_XmlLink.TabIndex = 54;
             // 
             // chkb_AlterarPrecos
             // 
             this.chkb_AlterarPrecos.AutoSize = true;
-            this.chkb_AlterarPrecos.Location = new System.Drawing.Point(209, 273);
+            this.chkb_AlterarPrecos.Location = new System.Drawing.Point(209, 231);
             this.chkb_AlterarPrecos.Name = "chkb_AlterarPrecos";
-            this.chkb_AlterarPrecos.Size = new System.Drawing.Size(139, 17);
-            this.chkb_AlterarPrecos.TabIndex = 53;
-            this.chkb_AlterarPrecos.Text = "Mudar preços de venda";
+            this.chkb_AlterarPrecos.Size = new System.Drawing.Size(90, 17);
+            this.chkb_AlterarPrecos.TabIndex = 7;
+            this.chkb_AlterarPrecos.Text = "Zerar Preços:";
             this.chkb_AlterarPrecos.UseVisualStyleBackColor = true;
             this.chkb_AlterarPrecos.CheckStateChanged += new System.EventHandler(this.chkb_AlterarPrecos_CheckStateChanged);
             // 
             // txt_CodigoBarras
             // 
             this.txt_CodigoBarras.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_CodigoBarras.Location = new System.Drawing.Point(884, 346);
+            this.txt_CodigoBarras.Location = new System.Drawing.Point(941, 348);
             this.txt_CodigoBarras.Name = "txt_CodigoBarras";
             this.txt_CodigoBarras.Size = new System.Drawing.Size(54, 33);
             this.txt_CodigoBarras.TabIndex = 51;
@@ -266,17 +278,17 @@ namespace ImportadorXmlNFe
             // 
             this.chkb_isFracionado.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.chkb_isFracionado.AutoSize = true;
-            this.chkb_isFracionado.Location = new System.Drawing.Point(876, 71);
+            this.chkb_isFracionado.Location = new System.Drawing.Point(917, 71);
             this.chkb_isFracionado.Name = "chkb_isFracionado";
             this.chkb_isFracionado.Size = new System.Drawing.Size(70, 17);
-            this.chkb_isFracionado.TabIndex = 50;
+            this.chkb_isFracionado.TabIndex = 1;
             this.chkb_isFracionado.Text = "Pesável?";
             this.chkb_isFracionado.UseVisualStyleBackColor = true;
             // 
             // label29
             // 
             this.label29.AutoSize = true;
-            this.label29.Location = new System.Drawing.Point(763, 114);
+            this.label29.Location = new System.Drawing.Point(766, 105);
             this.label29.Name = "label29";
             this.label29.Size = new System.Drawing.Size(54, 13);
             this.label29.TabIndex = 49;
@@ -284,11 +296,11 @@ namespace ImportadorXmlNFe
             // 
             // txt_Referencia
             // 
-            this.txt_Referencia.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_Referencia.Location = new System.Drawing.Point(766, 130);
+            this.txt_Referencia.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_Referencia.Location = new System.Drawing.Point(766, 121);
             this.txt_Referencia.Name = "txt_Referencia";
-            this.txt_Referencia.Size = new System.Drawing.Size(133, 33);
-            this.txt_Referencia.TabIndex = 48;
+            this.txt_Referencia.Size = new System.Drawing.Size(133, 29);
+            this.txt_Referencia.TabIndex = 3;
             // 
             // dgvTabelasDePrecos
             // 
@@ -300,10 +312,10 @@ namespace ImportadorXmlNFe
             this.codigotabela,
             this.nometabela,
             this.PrecoVenda});
-            this.dgvTabelasDePrecos.Location = new System.Drawing.Point(206, 296);
+            this.dgvTabelasDePrecos.Location = new System.Drawing.Point(206, 248);
             this.dgvTabelasDePrecos.Name = "dgvTabelasDePrecos";
-            this.dgvTabelasDePrecos.Size = new System.Drawing.Size(551, 100);
-            this.dgvTabelasDePrecos.TabIndex = 45;
+            this.dgvTabelasDePrecos.Size = new System.Drawing.Size(555, 127);
+            this.dgvTabelasDePrecos.TabIndex = 8;
             // 
             // chaveunica
             // 
@@ -341,13 +353,16 @@ namespace ImportadorXmlNFe
             // PrecoVenda
             // 
             this.PrecoVenda.DataPropertyName = "PrecoVenda";
+            dataGridViewCellStyle10.Format = "C3";
+            dataGridViewCellStyle10.NullValue = "0";
+            this.PrecoVenda.DefaultCellStyle = dataGridViewCellStyle10;
             this.PrecoVenda.HeaderText = "Preço";
             this.PrecoVenda.Name = "PrecoVenda";
             // 
             // label28
             // 
             this.label28.AutoSize = true;
-            this.label28.Location = new System.Drawing.Point(339, 114);
+            this.label28.Location = new System.Drawing.Point(339, 105);
             this.label28.Name = "label28";
             this.label28.Size = new System.Drawing.Size(106, 13);
             this.label28.TabIndex = 46;
@@ -355,17 +370,17 @@ namespace ImportadorXmlNFe
             // 
             // txt_Quantidade
             // 
-            this.txt_Quantidade.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_Quantidade.Location = new System.Drawing.Point(340, 130);
+            this.txt_Quantidade.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_Quantidade.Location = new System.Drawing.Point(340, 121);
             this.txt_Quantidade.Name = "txt_Quantidade";
             this.txt_Quantidade.ReadOnly = true;
-            this.txt_Quantidade.Size = new System.Drawing.Size(124, 33);
+            this.txt_Quantidade.Size = new System.Drawing.Size(124, 29);
             this.txt_Quantidade.TabIndex = 45;
             // 
             // label27
             // 
             this.label27.AutoSize = true;
-            this.label27.Location = new System.Drawing.Point(210, 114);
+            this.label27.Location = new System.Drawing.Point(210, 105);
             this.label27.Name = "label27";
             this.label27.Size = new System.Drawing.Size(87, 13);
             this.label27.TabIndex = 44;
@@ -373,11 +388,11 @@ namespace ImportadorXmlNFe
             // 
             // txt_PrecoCompra
             // 
-            this.txt_PrecoCompra.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_PrecoCompra.Location = new System.Drawing.Point(210, 130);
+            this.txt_PrecoCompra.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_PrecoCompra.Location = new System.Drawing.Point(210, 121);
             this.txt_PrecoCompra.Name = "txt_PrecoCompra";
             this.txt_PrecoCompra.ReadOnly = true;
-            this.txt_PrecoCompra.Size = new System.Drawing.Size(124, 33);
+            this.txt_PrecoCompra.Size = new System.Drawing.Size(124, 29);
             this.txt_PrecoCompra.TabIndex = 43;
             // 
             // tabFiscal
@@ -386,11 +401,11 @@ namespace ImportadorXmlNFe
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabFiscal.Controls.Add(this.tabPage1);
-            this.tabFiscal.Location = new System.Drawing.Point(206, 402);
+            this.tabFiscal.Location = new System.Drawing.Point(206, 378);
             this.tabFiscal.Name = "tabFiscal";
             this.tabFiscal.SelectedIndex = 0;
-            this.tabFiscal.Size = new System.Drawing.Size(802, 333);
-            this.tabFiscal.TabIndex = 42;
+            this.tabFiscal.Size = new System.Drawing.Size(805, 270);
+            this.tabFiscal.TabIndex = 45;
             // 
             // tabPage1
             // 
@@ -408,7 +423,7 @@ namespace ImportadorXmlNFe
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(794, 307);
+            this.tabPage1.Size = new System.Drawing.Size(797, 244);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Fiscal";
             // 
@@ -427,7 +442,7 @@ namespace ImportadorXmlNFe
             this.panel7.Controls.Add(this.label16);
             this.panel7.Location = new System.Drawing.Point(13, 364);
             this.panel7.Name = "panel7";
-            this.panel7.Size = new System.Drawing.Size(590, 86);
+            this.panel7.Size = new System.Drawing.Size(632, 86);
             this.panel7.TabIndex = 48;
             // 
             // label25
@@ -490,7 +505,7 @@ namespace ImportadorXmlNFe
             this.cb_CstCofins.FormattingEnabled = true;
             this.cb_CstCofins.Location = new System.Drawing.Point(286, 31);
             this.cb_CstCofins.Name = "cb_CstCofins";
-            this.cb_CstCofins.Size = new System.Drawing.Size(257, 33);
+            this.cb_CstCofins.Size = new System.Drawing.Size(299, 33);
             this.cb_CstCofins.TabIndex = 32;
             // 
             // label16
@@ -517,7 +532,7 @@ namespace ImportadorXmlNFe
             this.panel6.Controls.Add(this.label12);
             this.panel6.Location = new System.Drawing.Point(13, 272);
             this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(590, 86);
+            this.panel6.Size = new System.Drawing.Size(632, 86);
             this.panel6.TabIndex = 47;
             // 
             // txt_vBC_PIS
@@ -583,7 +598,7 @@ namespace ImportadorXmlNFe
             this.cb_CstPIS.FormattingEnabled = true;
             this.cb_CstPIS.Location = new System.Drawing.Point(286, 28);
             this.cb_CstPIS.Name = "cb_CstPIS";
-            this.cb_CstPIS.Size = new System.Drawing.Size(257, 33);
+            this.cb_CstPIS.Size = new System.Drawing.Size(299, 33);
             this.cb_CstPIS.TabIndex = 22;
             // 
             // label12
@@ -612,7 +627,7 @@ namespace ImportadorXmlNFe
             this.panel5.Controls.Add(this.label13);
             this.panel5.Location = new System.Drawing.Point(13, 179);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(590, 86);
+            this.panel5.Size = new System.Drawing.Size(632, 86);
             this.panel5.TabIndex = 46;
             // 
             // label23
@@ -651,7 +666,7 @@ namespace ImportadorXmlNFe
             this.cb_cstIPI.FormattingEnabled = true;
             this.cb_cstIPI.Location = new System.Drawing.Point(377, 24);
             this.cb_cstIPI.Name = "cb_cstIPI";
-            this.cb_cstIPI.Size = new System.Drawing.Size(166, 33);
+            this.cb_cstIPI.Size = new System.Drawing.Size(208, 33);
             this.cb_cstIPI.TabIndex = 30;
             // 
             // label20
@@ -723,7 +738,7 @@ namespace ImportadorXmlNFe
             this.panel4.Controls.Add(this.label11);
             this.panel4.Location = new System.Drawing.Point(13, 87);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(590, 86);
+            this.panel4.Size = new System.Drawing.Size(632, 86);
             this.panel4.TabIndex = 45;
             // 
             // txt_vBC_ICMS
@@ -789,7 +804,7 @@ namespace ImportadorXmlNFe
             this.cb_cstICMS.FormattingEnabled = true;
             this.cb_cstICMS.Location = new System.Drawing.Point(286, 31);
             this.cb_cstICMS.Name = "cb_cstICMS";
-            this.cb_cstICMS.Size = new System.Drawing.Size(257, 33);
+            this.cb_cstICMS.Size = new System.Drawing.Size(299, 33);
             this.cb_cstICMS.TabIndex = 15;
             // 
             // label11
@@ -842,24 +857,24 @@ namespace ImportadorXmlNFe
             // 
             this.panel3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(23)))), ((int)(((byte)(31)))));
             this.panel3.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel3.Location = new System.Drawing.Point(200, 737);
+            this.panel3.Location = new System.Drawing.Point(200, 654);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(810, 10);
+            this.panel3.Size = new System.Drawing.Size(813, 10);
             this.panel3.TabIndex = 37;
             // 
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(31)))), ((int)(((byte)(23)))), ((int)(((byte)(31)))));
             this.panel2.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel2.Location = new System.Drawing.Point(1010, 40);
+            this.panel2.Location = new System.Drawing.Point(1013, 34);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(10, 707);
+            this.panel2.Size = new System.Drawing.Size(10, 630);
             this.panel2.TabIndex = 36;
             // 
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(805, 206);
+            this.label10.Location = new System.Drawing.Point(810, 242);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(129, 13);
             this.label10.TabIndex = 20;
@@ -872,7 +887,7 @@ namespace ImportadorXmlNFe
             this.lbItensTabGrade.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lbItensTabGrade.FormattingEnabled = true;
             this.lbItensTabGrade.ItemHeight = 21;
-            this.lbItensTabGrade.Location = new System.Drawing.Point(884, 222);
+            this.lbItensTabGrade.Location = new System.Drawing.Point(889, 258);
             this.lbItensTabGrade.Name = "lbItensTabGrade";
             this.lbItensTabGrade.Size = new System.Drawing.Size(50, 88);
             this.lbItensTabGrade.TabIndex = 19;
@@ -881,7 +896,7 @@ namespace ImportadorXmlNFe
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(791, 222);
+            this.label9.Location = new System.Drawing.Point(796, 258);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(39, 13);
             this.label9.TabIndex = 18;
@@ -895,7 +910,7 @@ namespace ImportadorXmlNFe
             this.panelGrade.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelGrade.Enabled = false;
             this.panelGrade.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.panelGrade.Location = new System.Drawing.Point(834, 222);
+            this.panelGrade.Location = new System.Drawing.Point(839, 258);
             this.panelGrade.Name = "panelGrade";
             this.panelGrade.Size = new System.Drawing.Size(44, 88);
             this.panelGrade.TabIndex = 17;
@@ -904,7 +919,7 @@ namespace ImportadorXmlNFe
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(634, 114);
+            this.label5.Location = new System.Drawing.Point(634, 105);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(31, 13);
             this.label5.TabIndex = 9;
@@ -912,16 +927,16 @@ namespace ImportadorXmlNFe
             // 
             // txt_Ncm
             // 
-            this.txt_Ncm.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_Ncm.Location = new System.Drawing.Point(637, 130);
+            this.txt_Ncm.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_Ncm.Location = new System.Drawing.Point(637, 121);
             this.txt_Ncm.Name = "txt_Ncm";
-            this.txt_Ncm.Size = new System.Drawing.Size(124, 33);
-            this.txt_Ncm.TabIndex = 8;
+            this.txt_Ncm.Size = new System.Drawing.Size(124, 29);
+            this.txt_Ncm.TabIndex = 2;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(470, 114);
+            this.label4.Location = new System.Drawing.Point(470, 105);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(60, 13);
             this.label4.TabIndex = 7;
@@ -929,18 +944,19 @@ namespace ImportadorXmlNFe
             // 
             // txt_Gtin
             // 
-            this.txt_Gtin.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_Gtin.Location = new System.Drawing.Point(470, 130);
+            this.txt_Gtin.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_Gtin.Location = new System.Drawing.Point(470, 121);
             this.txt_Gtin.Name = "txt_Gtin";
             this.txt_Gtin.ReadOnly = true;
-            this.txt_Gtin.Size = new System.Drawing.Size(163, 33);
-            this.txt_Gtin.TabIndex = 6;
+            this.txt_Gtin.Size = new System.Drawing.Size(163, 29);
+            this.txt_Gtin.TabIndex = 46;
             // 
             // label3
             // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(765, 55);
+            this.label3.Location = new System.Drawing.Point(764, 154);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(47, 13);
             this.label3.TabIndex = 5;
@@ -957,22 +973,21 @@ namespace ImportadorXmlNFe
             // 
             // txt_Un
             // 
-            this.txt_Un.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.txt_Un.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_Un.Location = new System.Drawing.Point(768, 71);
+            this.txt_Un.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_Un.Location = new System.Drawing.Point(766, 170);
             this.txt_Un.Name = "txt_Un";
-            this.txt_Un.Size = new System.Drawing.Size(100, 33);
-            this.txt_Un.TabIndex = 3;
+            this.txt_Un.Size = new System.Drawing.Size(136, 29);
+            this.txt_Un.TabIndex = 6;
             // 
             // txt_Nome
             // 
             this.txt_Nome.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.txt_Nome.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txt_Nome.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txt_Nome.Location = new System.Drawing.Point(210, 71);
             this.txt_Nome.Name = "txt_Nome";
-            this.txt_Nome.Size = new System.Drawing.Size(553, 33);
-            this.txt_Nome.TabIndex = 2;
+            this.txt_Nome.Size = new System.Drawing.Size(692, 29);
+            this.txt_Nome.TabIndex = 0;
             // 
             // panel1
             // 
@@ -980,9 +995,9 @@ namespace ImportadorXmlNFe
             this.panel1.Controls.Add(this.BtnVincular);
             this.panel1.Controls.Add(this.btnRestaurar);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panel1.Location = new System.Drawing.Point(0, 40);
+            this.panel1.Location = new System.Drawing.Point(0, 34);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(200, 707);
+            this.panel1.Size = new System.Drawing.Size(200, 630);
             this.panel1.TabIndex = 1;
             // 
             // BtnVincular
@@ -997,7 +1012,7 @@ namespace ImportadorXmlNFe
             this.BtnVincular.Location = new System.Drawing.Point(0, 344);
             this.BtnVincular.Name = "BtnVincular";
             this.BtnVincular.Size = new System.Drawing.Size(200, 74);
-            this.BtnVincular.TabIndex = 1;
+            this.BtnVincular.TabIndex = 10;
             this.BtnVincular.Text = "Vincular";
             this.BtnVincular.UseVisualStyleBackColor = false;
             // 
@@ -1013,7 +1028,7 @@ namespace ImportadorXmlNFe
             this.btnRestaurar.Location = new System.Drawing.Point(0, 268);
             this.btnRestaurar.Name = "btnRestaurar";
             this.btnRestaurar.Size = new System.Drawing.Size(200, 74);
-            this.btnRestaurar.TabIndex = 0;
+            this.btnRestaurar.TabIndex = 9;
             this.btnRestaurar.Text = "Restaurar";
             this.btnRestaurar.UseVisualStyleBackColor = false;
             this.btnRestaurar.Click += new System.EventHandler(this.btnRestaurar_Click);
@@ -1029,7 +1044,7 @@ namespace ImportadorXmlNFe
             this.panelBarraTitulo.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelBarraTitulo.Location = new System.Drawing.Point(0, 0);
             this.panelBarraTitulo.Name = "panelBarraTitulo";
-            this.panelBarraTitulo.Size = new System.Drawing.Size(1020, 40);
+            this.panelBarraTitulo.Size = new System.Drawing.Size(1023, 34);
             this.panelBarraTitulo.TabIndex = 0;
             this.panelBarraTitulo.MouseMove += new System.Windows.Forms.MouseEventHandler(this.panelBarraTitulo_MouseMove);
             // 
@@ -1048,7 +1063,7 @@ namespace ImportadorXmlNFe
             // 
             this.btnRestore.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnRestore.Image = global::ImportadorXmlNFe.Properties.Resources.miximized_32;
-            this.btnRestore.Location = new System.Drawing.Point(864, 5);
+            this.btnRestore.Location = new System.Drawing.Point(867, 4);
             this.btnRestore.Name = "btnRestore";
             this.btnRestore.Size = new System.Drawing.Size(32, 32);
             this.btnRestore.TabIndex = 3;
@@ -1060,7 +1075,7 @@ namespace ImportadorXmlNFe
             // 
             this.btnMinimize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnMinimize.Image = global::ImportadorXmlNFe.Properties.Resources.minimize_32;
-            this.btnMinimize.Location = new System.Drawing.Point(914, 5);
+            this.btnMinimize.Location = new System.Drawing.Point(917, 5);
             this.btnMinimize.Name = "btnMinimize";
             this.btnMinimize.Size = new System.Drawing.Size(32, 32);
             this.btnMinimize.TabIndex = 2;
@@ -1070,7 +1085,7 @@ namespace ImportadorXmlNFe
             // 
             this.btnMax.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnMax.Image = global::ImportadorXmlNFe.Properties.Resources.mini_miximize_32;
-            this.btnMax.Location = new System.Drawing.Point(950, 5);
+            this.btnMax.Location = new System.Drawing.Point(953, 4);
             this.btnMax.Name = "btnMax";
             this.btnMax.Size = new System.Drawing.Size(32, 32);
             this.btnMax.TabIndex = 1;
@@ -1081,32 +1096,21 @@ namespace ImportadorXmlNFe
             // 
             this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnClose.Image = global::ImportadorXmlNFe.Properties.Resources.close_32;
-            this.btnClose.Location = new System.Drawing.Point(985, 5);
+            this.btnClose.Location = new System.Drawing.Point(988, 2);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(32, 32);
             this.btnClose.TabIndex = 0;
             this.btnClose.TabStop = false;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
-            // label26
-            // 
-            this.label26.AutoSize = true;
-            this.label26.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label26.ForeColor = System.Drawing.Color.White;
-            this.label26.Location = new System.Drawing.Point(3, 6);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(114, 13);
-            this.label26.TabIndex = 53;
-            this.label26.Text = "Produto vinculado:";
-            // 
             // FrmCadProdutoXmlNfe
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1020, 747);
+            this.ClientSize = new System.Drawing.Size(1023, 664);
             this.Controls.Add(this.panelBase);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.MinimumSize = new System.Drawing.Size(1012, 726);
+            this.MinimumSize = new System.Drawing.Size(1012, 660);
             this.Name = "FrmCadProdutoXmlNfe";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "frmCadProdutoXmlNfe";
@@ -1208,12 +1212,6 @@ namespace ImportadorXmlNFe
         private System.Windows.Forms.ComboBox cbModalidadeDeterminaBC;
         private System.Windows.Forms.TextBox txt_Cest;
         private System.Windows.Forms.DataGridView dgvTabelasDePrecos;
-        private System.Windows.Forms.DataGridViewTextBoxColumn chaveunica;
-        private System.Windows.Forms.DataGridViewTextBoxColumn codigoproduto;
-        private System.Windows.Forms.DataGridViewTextBoxColumn chaveunicatabela;
-        private System.Windows.Forms.DataGridViewTextBoxColumn codigotabela;
-        private System.Windows.Forms.DataGridViewTextBoxColumn nometabela;
-        private System.Windows.Forms.DataGridViewTextBoxColumn PrecoVenda;
         private System.Windows.Forms.Label label28;
         private System.Windows.Forms.TextBox txt_Quantidade;
         private System.Windows.Forms.Label label27;
@@ -1231,5 +1229,11 @@ namespace ImportadorXmlNFe
         private System.Windows.Forms.Button Btn_Vincular;
         private System.Windows.Forms.Panel panel8;
         private System.Windows.Forms.Label label26;
+        private System.Windows.Forms.DataGridViewTextBoxColumn chaveunica;
+        private System.Windows.Forms.DataGridViewTextBoxColumn codigoproduto;
+        private System.Windows.Forms.DataGridViewTextBoxColumn chaveunicatabela;
+        private System.Windows.Forms.DataGridViewTextBoxColumn codigotabela;
+        private System.Windows.Forms.DataGridViewTextBoxColumn nometabela;
+        private System.Windows.Forms.DataGridViewTextBoxColumn PrecoVenda;
     }
 }

@@ -55,12 +55,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FrmBuscaProdutos.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FrmBuscaProdutos.Designer.cs">
-      <DependentUpon>FrmBuscaProdutos.cs</DependentUpon>
-    </Compile>
     <Compile Include="FrmCadProdutoXmlNfe.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -75,9 +69,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="FrmBuscaProdutos.resx">
-      <DependentUpon>FrmBuscaProdutos.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="FrmCadProdutoXmlNfe.resx">
       <DependentUpon>FrmCadProdutoXmlNfe.cs</DependentUpon>
     </EmbeddedResource>

@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -144,7 +145,7 @@ namespace ImportadorXmlNFe
 
             isPermiteEdicao(produtoNfe.isExiste);
 
-            if (!produtoNfe.isAlteraPreco)
+            if (produtoNfe.isAlteraPreco)
             {
                 chkb_AlterarPrecos.Checked = true; //força o evento
                 chkb_AlterarPrecos.Checked = false;
@@ -463,8 +464,8 @@ namespace ImportadorXmlNFe
                 cbModalidadeDeterminaBC.SelectedValue = produtoNFe.modBC;
                 cb_cstICMS.SelectedValue = produtoNFe.cstICMS ?? string.Empty;
                 cb_cstIPI.SelectedValue = produtoNfe.cstIPI ?? string.Empty;
-                cb_CstPIS.SelectedValue = produtoNFe.cstPIS;
-                cb_CstCofins.SelectedValue = produtoNFe.cstCOFINS;
+                cb_CstPIS.SelectedValue = produtoNFe.cstPIS ?? string.Empty;
+                cb_CstCofins.SelectedValue = produtoNFe.cstCOFINS ?? string.Empty;
             }
         }
 
@@ -665,9 +666,16 @@ namespace ImportadorXmlNFe
         } 
         private void chkb_AlterarPrecos_CheckStateChanged(object sender, EventArgs e)
         {
-            if (chkb_AlterarPrecos.CheckState == CheckState.Checked)
+            if (chkb_AlterarPrecos.CheckState == CheckState.Unchecked)
             {
-                dgvTabelasDePrecos.Enabled = true;
+                //foreach (var preco in produtoNfe.ItensGradeProdutos[0].Precos)
+                //{
+                //    //preco.PrecoVenda = 0.0M;
+                //}
+                //CarregaDGVTabelasDePrecos();
+                //dgvTabelasDePrecos.Enabled = false;
+                //dgvTabelasDePrecos.Refresh();
+                //dgvTabelasDePrecos.Enabled = true;
             }
             else
             {
@@ -678,6 +686,7 @@ namespace ImportadorXmlNFe
                 CarregaDGVTabelasDePrecos();
                 dgvTabelasDePrecos.Enabled = false;
                 dgvTabelasDePrecos.Refresh();
+                dgvTabelasDePrecos.Enabled = true;
             }
         }
 
@@ -789,7 +798,6 @@ namespace ImportadorXmlNFe
             dgvTabelasDePrecos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
 
             dgvTabelasDePrecos.Columns[4].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-
         }
 
     }

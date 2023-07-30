@@ -18,6 +18,9 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Xml;
+using System.Text.RegularExpressions;
+using System.Data;
+using System.Globalization;
 
 namespace ImportadorXmlNFe
 {
@@ -35,8 +38,10 @@ namespace ImportadorXmlNFe
         int chaveItemPreExistente = 0;
 
         #region Inteiros representam os ídices das Columns do DataGridView de Produtos
-        private int colunaCodigo;
-        private int colunaEAN;
+        private int colunaCodigoIndex;
+        private int colunaEANIndex;
+        private int colunaReceberIndex;
+
         #endregion
         Loja loja;
         NFe dadosNFe;
@@ -89,11 +94,12 @@ namespace ImportadorXmlNFe
                 CarregaComboLocaisDeEstoque();
                 tiposMovEstoque = dadosMoviEstoqueRepository.RetornaTiposMovEstoque();
                 produtosNFE = new List<ProdutoNFe>();
-                BindAcoes(new ObservableCollection<ProdutoNFeDataGridColumns>());
+                BindDataGridProdutos(new ObservableCollection<ProdutoNFeDataGridColumns>());
                 FormataDataGridView();
 
                 statusNota = new StatusNota();
                 statusNota.PropertyChanged += StatusNota_PropertyChanged;
+                
             }
             catch (Exception ex)
             {
@@ -107,7 +113,7 @@ namespace ImportadorXmlNFe
             statusNota.status = StatusNota.Status.ALER;
             cadProdutos = new List<CadProduto>();
             produtoDataGrid = new ProdutoNFeDataGridColumns();
-            BindAcoes(new ObservableCollection<ProdutoNFeDataGridColumns>());
+            BindDataGridProdutos(new ObservableCollection<ProdutoNFeDataGridColumns>());
         }
 
         private void btnLocalizarXML_Click(object sender, EventArgs e)
@@ -435,7 +441,7 @@ namespace ImportadorXmlNFe
                                     {
                                         char c = produtoNFe.cEAN[i];
 
-                                        if (!DinnamuS_Desktop_2._0.Utils.ValidaNumero.Validar(c))
+                                        if (!ValidaNumero.Validar(c))
                                         {
                                             isEAN = false;
                                             break;
@@ -477,13 +483,13 @@ namespace ImportadorXmlNFe
                             if (reader.Name == "qCom")
                             {
                                 produtoNFe.qCom = reader.ReadElementContentAsDecimal();
-                                produtoDataGrid.qCom = produtoNFe.qCom.ToString();
+                                produtoDataGrid.qCom = (int)produtoNFe.qCom;
                             }
 
                             if (reader.Name == "vUnCom")
                             {
                                 produtoNFe.vUnCom = reader.ReadElementContentAsDecimal();
-                                produtoDataGrid.vUnCom = produtoNFe.vUnCom.ToString();
+                                produtoDataGrid.vUnCom = produtoNFe.vUnCom;
                             }
 
                             if (reader.Name == "NCM")
@@ -498,8 +504,19 @@ namespace ImportadorXmlNFe
 
                             if (reader.NodeType == XmlNodeType.Element && reader.Name == "ICMS")
                             {
+                                reader.Read(); //Avança para o próximo elemento nó: <ICMS????>
 
-                                if (reader.ReadToDescendant("CST"))
+                                if (reader.ReadToDescendant("orig"))
+                                {
+                                    produtoNFe.OrigemDoProduto = reader.ReadElementContentAsInt().ToString();
+                                }
+
+                                if (reader.Name == "CSOSN")
+                                {
+                                    produtoNFe.cstICMS = reader.ReadElementContentAsString();
+                                }
+
+                                if (reader.Name == "CST")
                                 {
                                     produtoNFe.cstICMS = reader.ReadElementContentAsString();
                                 }
@@ -523,7 +540,7 @@ namespace ImportadorXmlNFe
                                 {
                                     produtoNFe.vICMS = reader.ReadElementContentAsDecimal();
                                 }
-
+                                
                                 produtoNFe.PadroesFiscaisProdutoOrigem.Add
                                     (
                                     Impostos.TipoDeImposto.ICMS,
@@ -651,35 +668,19 @@ namespace ImportadorXmlNFe
 
                             if (reader.Name == "vProd")
                             {
-                                produtoNFe.vProd = reader.ReadElementContentAsString();
+                                produtoNFe.vProd = reader.ReadElementContentAsDecimal();
                                 produtoDataGrid.vProd = produtoNFe.vProd;
-                                #region Codigo Legado DataRow
-                                //DataRow dataRow = tableProdutos.NewRow();
-                                //dataRow.SetField("cProd", produto.cProd);
-                                //dataRow.SetField("cEAN", produto.cEAN);
-                                //dataRow.SetField("xProd", produto.xProd);
-                                //dataRow.SetField("qCom", produto.qCom);
-                                //dataRow.SetField("vUnCom", produto.vUnCom);
-                                //dataRow.SetField("vProd", produto.vProd);
-
-
-                                //Icon _ok = new Icon("ok.ico");
-                                //Icon _not = new Icon("not.ico");
-                                //.SetField("Existe?", intExiste > 0 ? _ok : _not);
-                                // ? true : false;
-
-                                //Icon _shared = new Icon("shared.ico");
-                                //Icon _unshared = new Icon("unshared.ico");
-                                #endregion
-
+                               
                                 produtoNFe.ChaveDeCriacao = dadosNFe.IdNFe;
-
 
                                 produtoNFe.isExiste = chaveItemPreExistente > 0 ? true : false;
                                 produtoDataGrid.IsExiste = produtoNFe.isExiste;
 
                                 produtoNFe.AcaoProdNFe = chaveItemPreExistente > 0 ? TiposAcaoProdNFe.TiposAcoesNFe.Nenhum : TiposAcaoProdNFe.TiposAcoesNFe.Cadastrar;
                                 produtoDataGrid.acaoProdNFe = produtoNFe.AcaoProdNFe;
+
+                                produtoNFe.isReceber = produtoNFe.isExiste ? false : true;
+                                produtoDataGrid.isReceber = produtoNFe.isReceber;
 
                                 produtoNFe.emitenteNFe = emitenteNFe;
                                 produtoNFe.Loja = Program.Loja.Codigo;
@@ -694,7 +695,7 @@ namespace ImportadorXmlNFe
                     }
                 }
                 //statusNota.status = StatusNota.Status.ARECEBER;
-                BindAcoes(produtosParaDataGridColumns);
+                BindDataGridProdutos(produtosParaDataGridColumns);
                 FormataDataGridView();
 
                 DesabilitaRowParaProdutoRepetido(dgvProdutos);
@@ -711,12 +712,15 @@ namespace ImportadorXmlNFe
 
         private void FormataDataGridView()
         {
+            
             dgvProdutos.AllowUserToAddRows = false;
             DataGridViewCellStyle cellStyle = new DataGridViewCellStyle();
-
+            
             cellStyle.Alignment = DataGridViewContentAlignment.BottomCenter;
             dgvProdutos.ColumnHeadersDefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.BottomCenter };
             dgvProdutos.DefaultCellStyle = cellStyle;
+            
+
 
             //DataGridViewImageColumn imgColumn = new DataGridViewImageColumn();
             //imgColumn.HeaderText = "Existe?";
@@ -724,8 +728,12 @@ namespace ImportadorXmlNFe
 
             //dgvProdutos.Columns.Add(imgColumn);
 
+            
             dgvProdutos.Columns[1].DefaultCellStyle = new DataGridViewCellStyle() { Alignment = DataGridViewContentAlignment.BottomLeft };
-
+            
+            
+            
+            //dgvProdutos.Columns[2].DefaultCellStyle.Format = "c2";
             //dgvProdutos.Columns[8].Width = 30;
             //dgvProdutos.Columns[9].Width = 30;
             //dgvProdutos.Columns[0].Width = 30;
@@ -739,11 +747,17 @@ namespace ImportadorXmlNFe
             //dgvProdutos.Columns[6].Width = 220;
             //dgvProdutos.Columns[7].Width = 220;
 
+            
             dgvProdutos.RowTemplate.Height = 28;
 
             dgvProdutos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.EnableResizing;
             dgvProdutos.ColumnHeadersHeight = 40;
             dgvProdutos.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+
+
+            //dgvProdutos.Columns[5].DefaultCellStyle.Format = "N2";
+            //dgvProdutos.Columns[6].DefaultCellStyle.Format = "c2";
+            //dgvProdutos.Columns[7].DefaultCellStyle.Format = "C";
 
             //dgvProdutos.Columns[10].Width = 30;
             //dgvProdutos.Columns[11].Width = 30;
@@ -890,6 +904,11 @@ namespace ImportadorXmlNFe
 
                 foreach (var _produtoNFe in produtosNFE)
                 {
+                    if (!_produtoNFe.isReceber)
+                    {
+                        continue;
+                    }
+
                     CadProduto cadProd = ProdutoNFeMappings.MapToCadProduto(_produtoNFe);
                     cadProd.ItensGrade = new List<ItemGradeProduto>();
                     cadProd.ItensGrade.Add(ProdutoNFeMappings.MapToItemGradeProduto(_produtoNFe));
@@ -942,7 +961,7 @@ namespace ImportadorXmlNFe
                             Data = dadosMoviEstoque.Data,
                             Quantidade = cadProd.ItensGrade[0].EstoqueInicial,
                             Preco = cadProd.ItensGrade[0].PrecoCompra,
-                            Total = Decimal.Parse(_produtoNFe.vProd),
+                            Total = _produtoNFe.vProd,
                             Ref = string.IsNullOrEmpty(cadProd.ItensGrade[0].Referencia) ? string.Empty : cadProd.ItensGrade[0].Referencia,
                             Loja = Program.Loja.Codigo,
                             EstoqueAnterior = 0.0F,
@@ -998,7 +1017,7 @@ namespace ImportadorXmlNFe
                             Data = dadosMoviEstoque.Data,
                             Quantidade = cadProd.ItensGrade[0].EstoqueInicial,
                             Preco = cadProd.ItensGrade[0].PrecoCompra,
-                            Total = Decimal.Parse(_produtoNFe.vProd),
+                            Total = _produtoNFe.vProd,
                             Ref = string.IsNullOrEmpty(cadProd.ItensGrade[0].Referencia) ? string.Empty : cadProd.ItensGrade[0].Referencia,
                             Loja = Program.Loja.Codigo,
                             EstoqueAnterior = estoqueAnterior,
@@ -1060,7 +1079,7 @@ namespace ImportadorXmlNFe
                 }
 
                 //Atualiza DataGridView, pois a Interface INotifyPropertyChanged apresentou erro
-                BindAcoes(produtosParaDataGridColumns);
+                BindDataGridProdutos(produtosParaDataGridColumns);
                 #endregion
                 statusNota.status = StatusNota.Status.RECEBIDA;
                 DesabilitaRowParaProdutoRepetido(dgvProdutos);
@@ -1145,7 +1164,7 @@ namespace ImportadorXmlNFe
                         Data = dadosMoviEstoqueAtual.Data,
                         Quantidade = cadProd.ItensGrade[0].EstoqueInicial,
                         Preco = cadProd.ItensGrade[0].PrecoCompra,
-                        Total = Decimal.Parse(_produtoNFe.vProd),
+                        Total = _produtoNFe.vProd,
                         Ref = string.IsNullOrEmpty(cadProd.ItensGrade[0].Referencia) ? string.Empty : cadProd.ItensGrade[0].Referencia,
                         Loja = loja.Codigo,
                         EstoqueAnterior = (float)estoqueAnterior,
@@ -1185,27 +1204,31 @@ namespace ImportadorXmlNFe
 
         }
 
-        private void BindAcoes(ObservableCollection<ProdutoNFeDataGridColumns> lista)
+        private void BindDataGridProdutos(ObservableCollection<ProdutoNFeDataGridColumns> lista)
         {
             bndSourceProdutosDataGrid = new BindingSource();
 
-            List<AcoesProdutoNFe> acoes = new List<AcoesProdutoNFe>()
-            {
-                new AcoesProdutoNFe{Id = TiposAcaoProdNFe.TiposAcoesNFe.Nenhum, Descricao = ""},
-                new AcoesProdutoNFe{Id = TiposAcaoProdNFe.TiposAcoesNFe.Cadastrar, Descricao = "Cadastrar"},
-                new AcoesProdutoNFe{Id = TiposAcaoProdNFe.TiposAcoesNFe.Vincular, Descricao = "Vincular"}
-            };
+            //List<AcoesProdutoNFe> acoes = new List<AcoesProdutoNFe>()
+            //{
+            //    new AcoesProdutoNFe{Id = TiposAcaoProdNFe.TiposAcoesNFe.Nenhum, Descricao = ""},
+            //    new AcoesProdutoNFe{Id = TiposAcaoProdNFe.TiposAcoesNFe.Cadastrar, Descricao = "Cadastrar"},
+            //    new AcoesProdutoNFe{Id = TiposAcaoProdNFe.TiposAcoesNFe.Vincular, Descricao = "Vincular"}
+            //};
 
-            var comboBox = (DataGridViewComboBoxColumn)dgvProdutos.Columns["acaoProdNFe"];
-            comboBox.DisplayMember = "Descricao";
-            comboBox.ValueMember = "Id";
-            comboBox.DataSource = acoes;
+            //var comboBox = (DataGridViewComboBoxColumn)dgvProdutos.Columns["acaoProdNFe"];
+            //comboBox.DisplayMember = "Descricao";
+            //comboBox.ValueMember = "Id";
+            //comboBox.DataSource = acoes;
+
+            
 
             bndSourceProdutosDataGrid.DataSource = lista;
             dgvProdutos.DataSource = bndSourceProdutosDataGrid;
 
-            colunaCodigo = dgvProdutos.Columns["cProd"].Index;
-            colunaEAN = dgvProdutos.Columns["cEAN"].Index;
+            colunaCodigoIndex = dgvProdutos.Columns["cProd"].Index;
+            colunaEANIndex = dgvProdutos.Columns["cEAN"].Index;
+            colunaReceberIndex = dgvProdutos.Columns["isReceber"].Index;
+
         }
 
         private void StatusNota_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -1228,11 +1251,11 @@ namespace ImportadorXmlNFe
                     DataGridViewRow linhaAtual = ((DataGridViewRow)dgv.Rows[i]);
                     DataGridViewRow ProximaLinha = ((DataGridViewRow)dgv.Rows[i + increment]);
 
-                    var valorCelulaCodigoDaLinhaAtual = linhaAtual.Cells[colunaCodigo].Value.ToString();
-                    var valorCelulaCodigoDaProximaLinha = ProximaLinha.Cells[colunaCodigo].Value.ToString();
+                    var valorCelulaCodigoDaLinhaAtual = linhaAtual.Cells[colunaCodigoIndex].Value.ToString();
+                    var valorCelulaCodigoDaProximaLinha = ProximaLinha.Cells[colunaCodigoIndex].Value.ToString();
 
-                    var valorCelulaEanDaLinhaAtual = linhaAtual.Cells[colunaEAN].Value.ToString();
-                    var valorCelulaEanDaProximaLinha = ProximaLinha.Cells[colunaEAN].Value.ToString();
+                    var valorCelulaEanDaLinhaAtual = linhaAtual.Cells[colunaEANIndex].Value.ToString();
+                    var valorCelulaEanDaProximaLinha = ProximaLinha.Cells[colunaEANIndex].Value.ToString();
 
                     if (valorCelulaCodigoDaLinhaAtual == valorCelulaCodigoDaProximaLinha && valorCelulaEanDaLinhaAtual == valorCelulaEanDaProximaLinha)
                     {
@@ -1249,7 +1272,6 @@ namespace ImportadorXmlNFe
                 }
             }
         }
-
         private void CarregaComboLocaisDeEstoque()
         {
             try
@@ -1265,7 +1287,6 @@ namespace ImportadorXmlNFe
                 throw ex;
             }
         }
-
         private void SetIconExist(bool _isExiste)
         {
             var ic = (DataGridViewImageColumn)dgvProdutos.Columns["imgColumn"];
@@ -1304,18 +1325,19 @@ namespace ImportadorXmlNFe
                 if (item.Precos == null)
                 {
                     item.Precos = new List<ItemTabelaPreco>();
-                    List<TabelaDePreco> tabelas = tabelaDePrecoRepository.RetornaTabelaDePrecos();
+                    List<TabelaDePreco> tabelas = tabelaDePrecoRepository.RetornaTabelasDePrecos();
 
                     if (tabelas.Count > 0)
                     {
                         foreach (var tabela in tabelas)
                         {
+                            
                             item.Precos.Add(new ItemTabelaPreco()
                             {
                                 //ChaveUnicaTabela = tabela.ChaveUnica,
                                 CodigoTabela = tabela.ChaveUnica,
                                 NomeTabela = tabela.Descricao,
-                                PrecoVenda = default(decimal)
+                                PrecoVenda = tabela.CalculaPreco(prodNFe.vUnCom)
                             });
                         }
                     }
@@ -1325,7 +1347,6 @@ namespace ImportadorXmlNFe
 
         private void dgvProdutos_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-
             if (e.ColumnIndex == 0)
             {
                 if (((DataGridView)sender).Rows[e.RowIndex].ReadOnly)
@@ -1372,7 +1393,6 @@ namespace ImportadorXmlNFe
                         {
                             produtoNFe.isExiste = formProdNFe.produtoNfe.isExiste;
                         }
-
                     }
 
                     dgvProdutos.Refresh();
@@ -1536,8 +1556,22 @@ namespace ImportadorXmlNFe
                 }
             }
         }
-    }
 
+        private void dgvProdutos_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            try
+            {
+                var checkBox = (bool)((DataGridViewRow)this.dgvProdutos.Rows[e.RowIndex]).Cells[colunaReceberIndex].Value;
+                ((ProdutoNFeDataGridColumns)bndSourceProdutosDataGrid.Current).isReceber = checkBox;
+
+                produtosNFE.Find(p => p.cProd == ((ProdutoNFeDataGridColumns)bndSourceProdutosDataGrid.Current).cProd).isReceber = checkBox;
+            }
+            catch (Exception)
+            {
+                //throw;
+            }       
+        }
+    }
     /// <summary>
     /// Classe criada para carregar as colunas do DataGridView
     /// </summary>
@@ -1547,9 +1581,9 @@ namespace ImportadorXmlNFe
         public string cProd { get; set; }
         public string cEAN { get; set; }
         public string xProd { get; set; }
-        public string qCom { get; set; }
-        public string vUnCom { get; set; }
-        public string vProd { get; set; }
+        public int qCom { get; set; }
+        public decimal vUnCom { get; set; }
+        public decimal vProd { get; set; }
         public bool IsExiste
         {
             get { return isExiste; }
@@ -1567,6 +1601,8 @@ namespace ImportadorXmlNFe
                 }
             }
         }
+
+        public bool isReceber { get; set; } = true;
 
         public TiposAcaoProdNFe.TiposAcoesNFe acaoProdNFe { get; set; }
 

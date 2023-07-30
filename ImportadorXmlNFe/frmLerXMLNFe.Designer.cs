@@ -32,6 +32,9 @@ namespace ImportadorXmlNFe
         /// </summary>
         private void InitializeComponent()
         {
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.txtLocalXML = new System.Windows.Forms.TextBox();
             this.btnLocalizarXML = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
@@ -49,16 +52,6 @@ namespace ImportadorXmlNFe
             this.panelStatus = new System.Windows.Forms.Panel();
             this.lblMensagemStatus = new System.Windows.Forms.Label();
             this.dgvProdutos = new System.Windows.Forms.DataGridView();
-            this.cProd = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.cEAN = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.xProd = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.qCom = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.vUnCom = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.vProd = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.isExiste = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.acaoProdNFe = new System.Windows.Forms.DataGridViewComboBoxColumn();
-            this.cad = new System.Windows.Forms.DataGridViewImageColumn();
-            this.vinc = new System.Windows.Forms.DataGridViewImageColumn();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -78,6 +71,17 @@ namespace ImportadorXmlNFe
             this.label9 = new System.Windows.Forms.Label();
             this.dataGridViewImageColumn1 = new System.Windows.Forms.DataGridViewImageColumn();
             this.dataGridViewImageColumn2 = new System.Windows.Forms.DataGridViewImageColumn();
+            this.cProd = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cEAN = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.xProd = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.qCom = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.vUnCom = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.vProd = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.isExiste = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.isReceber = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.acaoProdNFe = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.cad = new System.Windows.Forms.DataGridViewImageColumn();
+            this.vinc = new System.Windows.Forms.DataGridViewImageColumn();
             this.groupBox2.SuspendLayout();
             this.panelStatus.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProdutos)).BeginInit();
@@ -97,7 +101,7 @@ namespace ImportadorXmlNFe
             this.txtLocalXML.Location = new System.Drawing.Point(9, 24);
             this.txtLocalXML.Margin = new System.Windows.Forms.Padding(2);
             this.txtLocalXML.Name = "txtLocalXML";
-            this.txtLocalXML.Size = new System.Drawing.Size(804, 25);
+            this.txtLocalXML.Size = new System.Drawing.Size(659, 25);
             this.txtLocalXML.TabIndex = 0;
             // 
             // btnLocalizarXML
@@ -111,7 +115,7 @@ namespace ImportadorXmlNFe
             this.btnLocalizarXML.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnLocalizarXML.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnLocalizarXML.ForeColor = System.Drawing.Color.Transparent;
-            this.btnLocalizarXML.Location = new System.Drawing.Point(817, 21);
+            this.btnLocalizarXML.Location = new System.Drawing.Point(672, 21);
             this.btnLocalizarXML.Margin = new System.Windows.Forms.Padding(2);
             this.btnLocalizarXML.Name = "btnLocalizarXML";
             this.btnLocalizarXML.Size = new System.Drawing.Size(126, 28);
@@ -127,7 +131,7 @@ namespace ImportadorXmlNFe
             this.label6.BackColor = System.Drawing.Color.Black;
             this.label6.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label6.ForeColor = System.Drawing.Color.White;
-            this.label6.Location = new System.Drawing.Point(456, 130);
+            this.label6.Location = new System.Drawing.Point(311, 130);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(21, 17);
             this.label6.TabIndex = 15;
@@ -137,7 +141,7 @@ namespace ImportadorXmlNFe
             // 
             this.txtIE.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtIE.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtIE.Location = new System.Drawing.Point(458, 150);
+            this.txtIE.Location = new System.Drawing.Point(313, 150);
             this.txtIE.Name = "txtIE";
             this.txtIE.Size = new System.Drawing.Size(164, 25);
             this.txtIE.TabIndex = 14;
@@ -149,7 +153,7 @@ namespace ImportadorXmlNFe
             this.label5.BackColor = System.Drawing.Color.Black;
             this.label5.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label5.ForeColor = System.Drawing.Color.White;
-            this.label5.Location = new System.Drawing.Point(454, 74);
+            this.label5.Location = new System.Drawing.Point(309, 74);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(40, 17);
             this.label5.TabIndex = 12;
@@ -219,7 +223,7 @@ namespace ImportadorXmlNFe
             this.txtChaveDeAcesso.Location = new System.Drawing.Point(16, 150);
             this.txtChaveDeAcesso.Margin = new System.Windows.Forms.Padding(2);
             this.txtChaveDeAcesso.Name = "txtChaveDeAcesso";
-            this.txtChaveDeAcesso.Size = new System.Drawing.Size(437, 25);
+            this.txtChaveDeAcesso.Size = new System.Drawing.Size(292, 25);
             this.txtChaveDeAcesso.TabIndex = 3;
             // 
             // txtEmitente
@@ -230,7 +234,7 @@ namespace ImportadorXmlNFe
             this.txtEmitente.Location = new System.Drawing.Point(16, 93);
             this.txtEmitente.Margin = new System.Windows.Forms.Padding(2);
             this.txtEmitente.Name = "txtEmitente";
-            this.txtEmitente.Size = new System.Drawing.Size(437, 25);
+            this.txtEmitente.Size = new System.Drawing.Size(292, 25);
             this.txtEmitente.TabIndex = 2;
             // 
             // txtNumeroNota
@@ -255,7 +259,7 @@ namespace ImportadorXmlNFe
             this.groupBox2.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Padding = new System.Windows.Forms.Padding(2);
-            this.groupBox2.Size = new System.Drawing.Size(951, 65);
+            this.groupBox2.Size = new System.Drawing.Size(806, 65);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Arquivo:";
@@ -265,7 +269,7 @@ namespace ImportadorXmlNFe
             this.panelStatus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.panelStatus.BackColor = System.Drawing.Color.Green;
             this.panelStatus.Controls.Add(this.lblMensagemStatus);
-            this.panelStatus.Location = new System.Drawing.Point(964, 16);
+            this.panelStatus.Location = new System.Drawing.Point(819, 16);
             this.panelStatus.Name = "panelStatus";
             this.panelStatus.Size = new System.Drawing.Size(241, 56);
             this.panelStatus.TabIndex = 18;
@@ -295,6 +299,7 @@ namespace ImportadorXmlNFe
             this.vUnCom,
             this.vProd,
             this.isExiste,
+            this.isReceber,
             this.acaoProdNFe,
             this.cad,
             this.vinc});
@@ -303,97 +308,10 @@ namespace ImportadorXmlNFe
             this.dgvProdutos.Name = "dgvProdutos";
             this.dgvProdutos.RowHeadersWidth = 62;
             this.dgvProdutos.RowTemplate.Height = 28;
-            this.dgvProdutos.Size = new System.Drawing.Size(1184, 354);
+            this.dgvProdutos.Size = new System.Drawing.Size(1039, 108);
             this.dgvProdutos.TabIndex = 4;
             this.dgvProdutos.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvProdutos_CellClick);
-            // 
-            // cProd
-            // 
-            this.cProd.DataPropertyName = "cProd";
-            this.cProd.HeaderText = "Código";
-            this.cProd.MinimumWidth = 90;
-            this.cProd.Name = "cProd";
-            this.cProd.ReadOnly = true;
-            this.cProd.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cProd.Width = 90;
-            // 
-            // cEAN
-            // 
-            this.cEAN.DataPropertyName = "cEAN";
-            this.cEAN.HeaderText = "GTIN";
-            this.cEAN.Name = "cEAN";
-            this.cEAN.ReadOnly = true;
-            // 
-            // xProd
-            // 
-            this.xProd.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.xProd.DataPropertyName = "xProd";
-            this.xProd.HeaderText = "Descrição";
-            this.xProd.Name = "xProd";
-            this.xProd.ReadOnly = true;
-            // 
-            // qCom
-            // 
-            this.qCom.DataPropertyName = "qCom";
-            this.qCom.HeaderText = "Quantidade";
-            this.qCom.Name = "qCom";
-            this.qCom.ReadOnly = true;
-            this.qCom.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            // 
-            // vUnCom
-            // 
-            this.vUnCom.DataPropertyName = "vUnCom";
-            this.vUnCom.HeaderText = "Preço";
-            this.vUnCom.Name = "vUnCom";
-            this.vUnCom.ReadOnly = true;
-            // 
-            // vProd
-            // 
-            this.vProd.DataPropertyName = "vProd";
-            this.vProd.HeaderText = "Total";
-            this.vProd.Name = "vProd";
-            this.vProd.ReadOnly = true;
-            // 
-            // isExiste
-            // 
-            this.isExiste.DataPropertyName = "isExiste";
-            this.isExiste.FalseValue = "";
-            this.isExiste.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.isExiste.HeaderText = "Existe?";
-            this.isExiste.Name = "isExiste";
-            this.isExiste.ReadOnly = true;
-            this.isExiste.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.isExiste.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            // 
-            // acaoProdNFe
-            // 
-            this.acaoProdNFe.AutoComplete = false;
-            this.acaoProdNFe.DataPropertyName = "acaoProdNFe";
-            this.acaoProdNFe.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
-            this.acaoProdNFe.HeaderText = "Ação";
-            this.acaoProdNFe.Name = "acaoProdNFe";
-            this.acaoProdNFe.Visible = false;
-            // 
-            // cad
-            // 
-            this.cad.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.cad.FillWeight = 30F;
-            this.cad.HeaderText = "";
-            this.cad.Image = global::ImportadorXmlNFe.Properties.Resources.edit_16;
-            this.cad.MinimumWidth = 30;
-            this.cad.Name = "cad";
-            this.cad.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.cad.Width = 30;
-            // 
-            // vinc
-            // 
-            this.vinc.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.vinc.FillWeight = 32F;
-            this.vinc.HeaderText = "";
-            this.vinc.MinimumWidth = 30;
-            this.vinc.Name = "vinc";
-            this.vinc.Visible = false;
-            this.vinc.Width = 32;
+            this.dgvProdutos.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvProdutos_CellValueChanged);
             // 
             // tabControl1
             // 
@@ -403,10 +321,10 @@ namespace ImportadorXmlNFe
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tabControl1.Location = new System.Drawing.Point(8, 294);
+            this.tabControl1.Location = new System.Drawing.Point(8, 274);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1199, 287);
+            this.tabControl1.Size = new System.Drawing.Size(1054, 145);
             this.tabControl1.TabIndex = 10;
             // 
             // tabPage1
@@ -415,7 +333,7 @@ namespace ImportadorXmlNFe
             this.tabPage1.Location = new System.Drawing.Point(4, 26);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1191, 257);
+            this.tabPage1.Size = new System.Drawing.Size(1046, 115);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Itens da Nota";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -426,7 +344,7 @@ namespace ImportadorXmlNFe
             this.tabPage2.Location = new System.Drawing.Point(4, 26);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(1191, 257);
+            this.tabPage2.Size = new System.Drawing.Size(1046, 115);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Leitura do Arquivo";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -451,10 +369,10 @@ namespace ImportadorXmlNFe
             this.groupBox3.Controls.Add(this.btnCancelarXML);
             this.groupBox3.Controls.Add(this.btnImportarXML);
             this.groupBox3.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox3.Location = new System.Drawing.Point(8, 587);
+            this.groupBox3.Location = new System.Drawing.Point(8, 417);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Padding = new System.Windows.Forms.Padding(3, 0, 3, 3);
-            this.groupBox3.Size = new System.Drawing.Size(1199, 91);
+            this.groupBox3.Size = new System.Drawing.Size(1054, 92);
             this.groupBox3.TabIndex = 9;
             this.groupBox3.TabStop = false;
             // 
@@ -466,7 +384,7 @@ namespace ImportadorXmlNFe
             this.btnCancelarXML.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnCancelarXML.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnCancelarXML.ForeColor = System.Drawing.Color.White;
-            this.btnCancelarXML.Location = new System.Drawing.Point(598, 20);
+            this.btnCancelarXML.Location = new System.Drawing.Point(526, 21);
             this.btnCancelarXML.Margin = new System.Windows.Forms.Padding(2);
             this.btnCancelarXML.Name = "btnCancelarXML";
             this.btnCancelarXML.Size = new System.Drawing.Size(284, 54);
@@ -483,7 +401,7 @@ namespace ImportadorXmlNFe
             this.btnImportarXML.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnImportarXML.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnImportarXML.ForeColor = System.Drawing.Color.White;
-            this.btnImportarXML.Location = new System.Drawing.Point(299, 20);
+            this.btnImportarXML.Location = new System.Drawing.Point(227, 21);
             this.btnImportarXML.Margin = new System.Windows.Forms.Padding(2);
             this.btnImportarXML.Name = "btnImportarXML";
             this.btnImportarXML.Size = new System.Drawing.Size(284, 54);
@@ -518,7 +436,7 @@ namespace ImportadorXmlNFe
             this.panel1.ForeColor = System.Drawing.Color.White;
             this.panel1.Location = new System.Drawing.Point(8, 78);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1197, 207);
+            this.panel1.Size = new System.Drawing.Size(1052, 190);
             this.panel1.TabIndex = 11;
             // 
             // label8
@@ -527,7 +445,7 @@ namespace ImportadorXmlNFe
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label8.ForeColor = System.Drawing.Color.White;
-            this.label8.Location = new System.Drawing.Point(652, 74);
+            this.label8.Location = new System.Drawing.Point(507, 74);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(81, 17);
             this.label8.TabIndex = 21;
@@ -537,7 +455,7 @@ namespace ImportadorXmlNFe
             // 
             this.txtDestinatario.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtDestinatario.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtDestinatario.Location = new System.Drawing.Point(655, 93);
+            this.txtDestinatario.Location = new System.Drawing.Point(510, 93);
             this.txtDestinatario.Name = "txtDestinatario";
             this.txtDestinatario.Size = new System.Drawing.Size(533, 25);
             this.txtDestinatario.TabIndex = 19;
@@ -546,7 +464,7 @@ namespace ImportadorXmlNFe
             // 
             this.txtCnpjEmitente.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.txtCnpjEmitente.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtCnpjEmitente.Location = new System.Drawing.Point(458, 93);
+            this.txtCnpjEmitente.Location = new System.Drawing.Point(313, 93);
             this.txtCnpjEmitente.Mask = "00.000.000/0000-00";
             this.txtCnpjEmitente.Name = "txtCnpjEmitente";
             this.txtCnpjEmitente.Size = new System.Drawing.Size(163, 25);
@@ -559,7 +477,7 @@ namespace ImportadorXmlNFe
             this.label7.BackColor = System.Drawing.Color.Black;
             this.label7.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label7.ForeColor = System.Drawing.Color.White;
-            this.label7.Location = new System.Drawing.Point(652, 17);
+            this.label7.Location = new System.Drawing.Point(507, 17);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(111, 17);
             this.label7.TabIndex = 17;
@@ -570,7 +488,7 @@ namespace ImportadorXmlNFe
             this.cb_LocaisDeEstoque.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cb_LocaisDeEstoque.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cb_LocaisDeEstoque.FormattingEnabled = true;
-            this.cb_LocaisDeEstoque.Location = new System.Drawing.Point(655, 36);
+            this.cb_LocaisDeEstoque.Location = new System.Drawing.Point(510, 36);
             this.cb_LocaisDeEstoque.Name = "cb_LocaisDeEstoque";
             this.cb_LocaisDeEstoque.Size = new System.Drawing.Size(212, 25);
             this.cb_LocaisDeEstoque.TabIndex = 16;
@@ -582,7 +500,7 @@ namespace ImportadorXmlNFe
             this.groupBox1.BackColor = System.Drawing.Color.Transparent;
             this.groupBox1.Location = new System.Drawing.Point(0, -6);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(632, 207);
+            this.groupBox1.Size = new System.Drawing.Size(487, 193);
             this.groupBox1.TabIndex = 22;
             this.groupBox1.TabStop = false;
             // 
@@ -591,9 +509,9 @@ namespace ImportadorXmlNFe
             this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox4.Controls.Add(this.txtDestinatarioCNPJ);
             this.groupBox4.Controls.Add(this.label9);
-            this.groupBox4.Location = new System.Drawing.Point(638, -5);
+            this.groupBox4.Location = new System.Drawing.Point(493, -5);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(556, 206);
+            this.groupBox4.Size = new System.Drawing.Size(556, 192);
             this.groupBox4.TabIndex = 23;
             this.groupBox4.TabStop = false;
             // 
@@ -640,12 +558,115 @@ namespace ImportadorXmlNFe
             this.dataGridViewImageColumn2.Visible = false;
             this.dataGridViewImageColumn2.Width = 30;
             // 
+            // cProd
+            // 
+            this.cProd.DataPropertyName = "cProd";
+            this.cProd.HeaderText = "Código";
+            this.cProd.MinimumWidth = 90;
+            this.cProd.Name = "cProd";
+            this.cProd.ReadOnly = true;
+            this.cProd.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cProd.Width = 90;
+            // 
+            // cEAN
+            // 
+            this.cEAN.DataPropertyName = "cEAN";
+            this.cEAN.HeaderText = "GTIN";
+            this.cEAN.Name = "cEAN";
+            this.cEAN.ReadOnly = true;
+            // 
+            // xProd
+            // 
+            this.xProd.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.xProd.DataPropertyName = "xProd";
+            this.xProd.HeaderText = "Descrição";
+            this.xProd.Name = "xProd";
+            this.xProd.ReadOnly = true;
+            // 
+            // qCom
+            // 
+            this.qCom.DataPropertyName = "qCom";
+            dataGridViewCellStyle1.Format = "N2";
+            dataGridViewCellStyle1.NullValue = null;
+            this.qCom.DefaultCellStyle = dataGridViewCellStyle1;
+            this.qCom.HeaderText = "Quantidade";
+            this.qCom.Name = "qCom";
+            this.qCom.ReadOnly = true;
+            this.qCom.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            // 
+            // vUnCom
+            // 
+            this.vUnCom.DataPropertyName = "vUnCom";
+            dataGridViewCellStyle2.Format = "C2";
+            dataGridViewCellStyle2.NullValue = "0";
+            this.vUnCom.DefaultCellStyle = dataGridViewCellStyle2;
+            this.vUnCom.HeaderText = "Preço";
+            this.vUnCom.Name = "vUnCom";
+            this.vUnCom.ReadOnly = true;
+            // 
+            // vProd
+            // 
+            this.vProd.DataPropertyName = "vProd";
+            dataGridViewCellStyle3.Format = "C2";
+            dataGridViewCellStyle3.NullValue = "0";
+            this.vProd.DefaultCellStyle = dataGridViewCellStyle3;
+            this.vProd.HeaderText = "Total";
+            this.vProd.Name = "vProd";
+            this.vProd.ReadOnly = true;
+            // 
+            // isExiste
+            // 
+            this.isExiste.DataPropertyName = "isExiste";
+            this.isExiste.FalseValue = "";
+            this.isExiste.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.isExiste.HeaderText = "Existe?";
+            this.isExiste.Name = "isExiste";
+            this.isExiste.ReadOnly = true;
+            this.isExiste.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.isExiste.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
+            // isReceber
+            // 
+            this.isReceber.DataPropertyName = "isReceber";
+            this.isReceber.HeaderText = "Receber?";
+            this.isReceber.Name = "isReceber";
+            // 
+            // acaoProdNFe
+            // 
+            this.acaoProdNFe.AutoComplete = false;
+            this.acaoProdNFe.DataPropertyName = "acaoProdNFe";
+            this.acaoProdNFe.DisplayStyle = System.Windows.Forms.DataGridViewComboBoxDisplayStyle.ComboBox;
+            this.acaoProdNFe.HeaderText = "Ação";
+            this.acaoProdNFe.Name = "acaoProdNFe";
+            this.acaoProdNFe.Visible = false;
+            // 
+            // cad
+            // 
+            this.cad.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.cad.FillWeight = 30F;
+            this.cad.HeaderText = "";
+            this.cad.Image = global::ImportadorXmlNFe.Properties.Resources.edit_16;
+            this.cad.MinimumWidth = 30;
+            this.cad.Name = "cad";
+            this.cad.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.cad.Width = 30;
+            // 
+            // vinc
+            // 
+            this.vinc.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.vinc.FillWeight = 32F;
+            this.vinc.HeaderText = "";
+            this.vinc.MinimumWidth = 30;
+            this.vinc.Name = "vinc";
+            this.vinc.Visible = false;
+            this.vinc.Width = 32;
+            // 
             // FrmLerXMLNFe
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size(1215, 690);
+            this.ClientSize = new System.Drawing.Size(1070, 528);
             this.Controls.Add(this.panelStatus);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.groupBox3);
@@ -655,6 +676,7 @@ namespace ImportadorXmlNFe
             this.Name = "FrmLerXMLNFe";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Leitura e Importação de XML da NFe";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.frmLerXMLNFe_Load);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
@@ -718,6 +740,7 @@ namespace ImportadorXmlNFe
         private System.Windows.Forms.DataGridViewTextBoxColumn vUnCom;
         private System.Windows.Forms.DataGridViewTextBoxColumn vProd;
         private System.Windows.Forms.DataGridViewCheckBoxColumn isExiste;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn isReceber;
         private System.Windows.Forms.DataGridViewComboBoxColumn acaoProdNFe;
         private System.Windows.Forms.DataGridViewImageColumn cad;
         private System.Windows.Forms.DataGridViewImageColumn vinc;
